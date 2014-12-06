@@ -1,0 +1,8 @@
+encoding: utf-8
+defaults:
+  -
+    scope:
+      path: ""
+      type: "pages" # pages, posts, drafts
+    values:
+      layout: "default"
