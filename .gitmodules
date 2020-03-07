@@ -1,3 +1,93 @@
 [submodule "cytoscape.js"]
 	path = cytoscape.js
 	url = https://github.com/cytoscape/cytoscape.js.git
+[submodule "cytoscape_extensions/cytoscape.js-edgehandles"]
+	path = cytoscape_extensions/cytoscape.js-edgehandles
+	url = https://github.com/cytoscape/cytoscape.js-edgehandles.git
+[submodule "cytoscape_extensions/ngx-cytoscape"]
+	path = cytoscape_extensions/ngx-cytoscape
+	url = https://github.com/calvinvette/ngx-cytoscape.git
+[submodule "cytoscape_extensions/cytoscape.js-view-utilities"]
+	path = cytoscape_extensions/cytoscape.js-view-utilities
+	url = https://github.com/iVis-at-Bilkent/cytoscape.js-view-utilities
+[submodule "cytoscape_extensions/cytoscape.js-undo-redo"]
+	path = cytoscape_extensions/cytoscape.js-undo-redo
+	url = https://github.com/iVis-at-Bilkent/cytoscape.js-undo-redo.git
+[submodule "cytoscape_extensions/cytoscape.js-graphml"]
+	path = cytoscape_extensions/cytoscape.js-graphml
+	url = https://github.com/iVis-at-Bilkent/cytoscape.js-graphml.git
+[submodule "cytoscape_extensions/cytoscape-dblclick"]
+	path = cytoscape_extensions/cytoscape-dblclick
+	url = https://github.com/lambdalisue/cytoscape-dblclick.git
+[submodule "cytoscape_extensions/cytoscape.js-toolbar"]
+	path = cytoscape_extensions/cytoscape.js-toolbar
+	url = https://github.com/bdparrish/cytoscape.js-toolbar.git
+[submodule "cytoscape_extensions/cytoscape-snap-to-grid"]
+	path = cytoscape_extensions/cytoscape-snap-to-grid
+	url = https://github.com/guimeira/cytoscape-snap-to-grid.git
+[submodule "cytoscape_extensions/cytoscape.js-popper"]
+	path = cytoscape_extensions/cytoscape.js-popper
+	url = https://github.com/cytoscape/cytoscape.js-popper.git
+[submodule "cytoscape_extensions/cytoscape.js-panzoom"]
+	path = cytoscape_extensions/cytoscape.js-panzoom
+	url = https://github.com/cytoscape/cytoscape.js-panzoom.git
+[submodule "cytoscape_extensions/cytoscape.js-supportimages"]
+	path = cytoscape_extensions/cytoscape.js-supportimages
+	url = https://github.com/jhonatandarosa/cytoscape.js-supportimages.git
+[submodule "cytoscape_extensions/cytoscape.js-noderesize"]
+	path = cytoscape_extensions/cytoscape.js-noderesize
+	url = https://github.com/jhonatandarosa/cytoscape.js-noderesize.git
+[submodule "cytoscape_extensions/cytoscape.js-node-resize"]
+	path = cytoscape_extensions/cytoscape.js-node-resize
+	url = https://github.com/iVis-at-Bilkent/cytoscape.js-node-resize.git
+[submodule "cytoscape_extensions/cytoscape-node-html-label"]
+	path = cytoscape_extensions/cytoscape-node-html-label
+	url = https://github.com/kaluginserg/cytoscape-node-html-label.git
+[submodule "cytoscape_extensions/cytoscape-no-overlap"]
+	path = cytoscape_extensions/cytoscape-no-overlap
+	url = https://github.com/mo0om/cytoscape-no-overlap.git
+[submodule "cytoscape_extensions/cytoscape.js-navigator"]
+	path = cytoscape_extensions/cytoscape.js-navigator
+	url = https://github.com/cytoscape/cytoscape.js-navigator.git
+[submodule "cytoscape_extensions/cytoscape.js-grid-guide"]
+	path = cytoscape_extensions/cytoscape.js-grid-guide
+	url = https://github.com/iVis-at-Bilkent/cytoscape.js-grid-guide.git
+[submodule "cytoscape_extensions/cytoscape.js-expand-collapse"]
+	path = cytoscape_extensions/cytoscape.js-expand-collapse
+	url = https://github.com/iVis-at-Bilkent/cytoscape.js-expand-collapse.git
+[submodule "cytoscape_extensions/cytoscape-even-parent"]
+	path = cytoscape_extensions/cytoscape-even-parent
+	url = https://github.com/mo0om/cytoscape-even-parent.git
+[submodule "cytoscape_extensions/cytoscape-edge-connections"]
+	path = cytoscape_extensions/cytoscape-edge-connections
+	url = https://github.com/jri/cytoscape-edge-connections.git
+[submodule "cytoscape_extensions/fork-cytoscape.js-edge-editation"]
+	path = cytoscape_extensions/fork-cytoscape.js-edge-editation
+	url = https://github.com/sitnarf/fork-cytoscape.js-edge-editation.git
+[submodule "cytoscape_extensions/cytoscape.js-edge-editing"]
+	path = cytoscape_extensions/cytoscape.js-edge-editing
+	url = https://github.com/iVis-at-Bilkent/cytoscape.js-edge-editing.git
+[submodule "cytoscape_extensions/cytoscape.js-cxtmenu"]
+	path = cytoscape_extensions/cytoscape.js-cxtmenu
+	url = https://github.com/cytoscape/cytoscape.js-cxtmenu.git
+[submodule "cytoscape_extensions/cytoscape.js-context-menus"]
+	path = cytoscape_extensions/cytoscape.js-context-menus
+	url = https://github.com/iVis-at-Bilkent/cytoscape.js-context-menus.git
+[submodule "cytoscape_extensions/cytoscape.js-compound-drag-and-drop"]
+	path = cytoscape_extensions/cytoscape.js-compound-drag-and-drop
+	url = https://github.com/cytoscape/cytoscape.js-compound-drag-and-drop.git
+[submodule "cytoscape_extensions/cytoscape.js-canvas"]
+	path = cytoscape_extensions/cytoscape.js-canvas
+	url = https://github.com/classcraft/cytoscape.js-canvas.git
+[submodule "cytoscape_extensions/cytoscape.js-autopan-on-drag"]
+	path = cytoscape_extensions/cytoscape.js-autopan-on-drag
+	url = https://github.com/iVis-at-Bilkent/cytoscape.js-autopan-on-drag.git
+[submodule "cytoscape_extensions/cytoscape.js-automove"]
+	path = cytoscape_extensions/cytoscape.js-automove
+	url = https://github.com/cytoscape/cytoscape.js-automove.git
+[submodule "cytoscape_extensions/cerebral-web"]
+	path = cytoscape_extensions/cerebral-web
+	url = https://github.com/silviafrias/cerebral-web.git
+[submodule "javascripts/lodash"]
+	path = javascripts/lodash
+	url = https://github.com/lodash/lodash.git

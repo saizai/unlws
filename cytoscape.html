@@ -7,13 +7,17 @@
 
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
 
+    <script src="./javascripts/lodash.js"></script>
     <!-- <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script> -->
 
     <!-- for testing with local version of cytoscape.js -->
-    <script src="../javascripts/cytoscape.esm.js"></script>
+    <script src="javascripts/cytoscape.umd.js"></script>
+    <!-- <script type="module">
+      import lodash from "./javascripts/lodash.js";
+      import cytoscape from "./javascripts/cytoscape.esm.js";
+    </script> -->
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.10/lodash.js"></script>
-    <script src="cytoscape-edgehandles.js"></script>
+    <script src="./javascripts/cytoscape-edgehandles.js"></script>
 
     <style>
       body {
