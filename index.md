@@ -8,7 +8,7 @@ Whee lists:
 
 1. foo
 2. bar
-3. qux
+3. quux
 
 # H1
 H1!
