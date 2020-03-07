@@ -1,4 +1,5 @@
 encoding: utf-8
+highlighter: rouge
 defaults:
   -
     scope:
