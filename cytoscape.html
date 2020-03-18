@@ -19,6 +19,9 @@
 
     <script src="./javascripts/cytoscape-edgehandles.js"></script>
 
+    <!-- for now -->
+    <script src="../cubic-splines/cytoscape-cubic-splines.js"></script>
+
     <style>
       body {
         font-family: helvetica neue, helvetica, liberation sans, arial, sans-serif;
@@ -58,7 +61,7 @@
             name: 'preset'
           },
 
-          
+
           style: [
             {
               selector: 'node',
@@ -68,21 +71,21 @@
                 'border-opacity': 0.1
               }
             },
-            
+
             {
               selector: 'node:childless',
               style: {
                 'background-color': 'red'
               }
             },
-            
+
             {
               selector: 'node:parent',
               style: {
                 'background-opacity': 0
               }
             },
-            
+
             {
               selector: 'node[name]',
               style: {
@@ -107,7 +110,7 @@
                 'width': '1px'
               }
             },
-            
+
             // {
             //   "selector": "edge.bezier",
             //   "style": {
@@ -440,6 +443,9 @@
           ]
         });
 
+        document.querySelector('#add').addEventListener('click', function() {
+          cy.cubicSplines({ x: 32, y: 32 });
+        });
         // var eh = cy.edgehandles({
         //   noEdgeEventsInDraw: true,
         //   snap: true
@@ -466,11 +472,12 @@
 
     <div id="cy"></div>
 
-    <!-- <div id="buttons">
-      <button id="start">Start on selected</button>
+    <div id="buttons">
+      <button id="add">Test: add a node</button>
+      <!--<button id="start">Start on selected</button>
       <button id="draw-on">Draw mode on</button>
-      <button id="draw-off">Draw mode off</button>
-    </div> -->
+      <button id="draw-off">Draw mode off</button>-->
+    </div>
 
   </body>
 
