@@ -1,0 +1,17 @@
+:root {
+    --background-color: #ddd;
+    --text-color: #6679;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Courier, sans-serif;
+}
+
+canvas {
+    top: 0;
+    position: absolute;
+    z-index: -1;
+    background-color: var(--background-color);
+    display: block;
+}
