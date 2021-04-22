@@ -10,9 +10,23 @@
 <div id="board">
     <canvas></canvas>
 </div>
+<script src="glyph.js"></script>
 <script src="app.js"></script>
 <script>
-    let app = new App({});
+    let firstsg = new Glyph({vertices: {
+      "S": {position: [0,1]},
+      "0": {position: [0,0]},
+      "1": {position: [0,-1]},
+      "2": {position: [-1,0]},
+      "3": {position: [0.5,0]},
+    }, paths: [
+      {from: "S", to: "0", type: "line"},
+      {from: "0", to: "1", type: "line"},
+      {from: "1", to: "2", type: "line"},
+      {from: "2", to: "0", type: "line"},
+      {from: "0", to: "3", type: "line"},
+    ]})
+    let app = new App({glyphs: [firstsg]});
 </script>
 
 </body>

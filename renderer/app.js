@@ -1,33 +1,54 @@
+class Drawer {
+	constructor(canvas, ctx) {
+		this.canvas = canvas;
+		this.ctx = ctx;
+	}
+
+	drawGlyph(glyph, x=0, y=0, angle=0) {
+		let baseTransform = this.ctx.getTransform();
+		this.ctx.translate(x, y);
+		this.ctx.rotate(angle);
+
+		glyph.lineCoordinates().forEach((coords) => {
+			this.ctx.beginPath();
+	    this.ctx.moveTo(coords[0][0], coords[0][1]);
+	    this.ctx.lineTo(coords[1][0], coords[1][1]);
+	    this.ctx.stroke();
+		});
+
+		this.ctx.setTransform(baseTransform);
+	}
+}
+
 class App {
 	constructor(params) {
-    // "font size" for glyphs
-    this.emSize = params.emSize || 48;
+		// crude.  will be replaced when we start on the sentence level
+		this.glyphs = params.glyphs || [];
 
 		this.setupDrawing(params)
 
-    // check if I got the coordinates right
-    this.ctx.strokeStyle = '#153360';
-    this.ctx.lineWidth = this.emSize/12;
-    this.ctx.beginPath();
-    this.ctx.moveTo(-this.emSize/2, 0);
-    this.ctx.lineTo(this.emSize/2, 0);
-    this.ctx.stroke();
+		if (this.glyphs.length)
+			this.drawer.drawGlyph(this.glyphs[0]);
 	}
 
-	setupDrawing({canvas_element, antialias=false}) {
-		this.canvas = canvas_element || document.getElementById("board").firstElementChild;
+	setupDrawing(params) {
+		this.canvas = params.canvas_element || document.getElementById("board").firstElementChild;
 		this.ctx = this.canvas.getContext("2d", {
 			alpha: false,
 			desynchronized: true,
 			powerPreference: "high-performance",
 			failIfMajorPerformanceCaveat: true,
-			antialias: antialias
+			antialias: params.antialias || false
 		});
 
-		this.resetCanvas()
+		this.resetCanvas(params.emSize || 48);
+		this.drawer = new Drawer(this.canvas, this.ctx);
+
+		this.ctx.strokeStyle = params.strokeStyle || '#153360';
+		this.ctx.lineWidth = params.lineWidth || 1/12;
 	}
 
-	resetCanvas() {
+	resetCanvas(emSize) {
 		// HiDPI canvas adapted from http://www.html5rocks.com/en/tutorials/canvas/hidpi/
 		const devicePixelRatio = window.devicePixelRatio || 1;
 		this.canvas.width = window.innerWidth*devicePixelRatio;
@@ -36,7 +57,8 @@ class App {
 		this.canvas.style.height = window.innerHeight + 'px';
     // put the origin at centre
     this.ctx.translate(this.canvas.width/2, this.canvas.height/2);
-    // use the logical pixel as unit
-		this.ctx.scale(devicePixelRatio, devicePixelRatio);
+    // use the "em" as unit.
+		// This is our analogue of font size for glyphs.
+		this.ctx.scale(devicePixelRatio * emSize, devicePixelRatio * emSize);
 	}
 }
