@@ -15,7 +15,15 @@ class Drawer {
 	    this.ctx.lineTo(coords[1][0], coords[1][1]);
 	    this.ctx.stroke();
 		});
-
+    glyph.bezierCoordinates().forEach((coords) => {
+      this.ctx.beginPath();
+      this.ctx.moveTo(coords[0][0], coords[0][1]);
+      this.ctx.bezierCurveTo(coords[1][0], coords[1][1],
+                             coords[2][0], coords[2][1],
+                             coords[3][0], coords[3][1]);
+      this.ctx.stroke();
+    });
+    
 		this.ctx.setTransform(baseTransform);
 	}
 }
@@ -27,8 +35,10 @@ class App {
 
 		this.setupDrawing(params)
 
-		if (this.glyphs.length)
-			this.drawer.drawGlyph(this.glyphs[0]);
+    this.glyphs.forEach((garray) => {
+      this.drawer.drawGlyph(garray[0], garray[1] || 0, garray[2] || 0, garray[3] || 0);
+
+    });
 	}
 
 	setupDrawing(params) {
