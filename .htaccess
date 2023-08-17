@@ -152,6 +152,10 @@
 # 508 infinite loop detected
 
 # main
+RewriteRule nlws/test foo2 [L,R=302,NC]
+RewriteRule test foo [L,R=302,NC]
+RewriteRule bar qux [OR,NC]
+RewriteRule quux qux [L,R=302,NC]
 RewriteRule ^/nlws/gdoc$ [OR,NC]
 RewriteRule ^/nlws/doc$ https://docs.google.com/document/d/1Ndb-xx2YaZhJWnKfLdnpa-hnhOGUdbm0vhY1JOeG3IQ/edit [L,R=302,NC]
 
