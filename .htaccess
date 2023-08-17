@@ -186,14 +186,14 @@ RewriteRule ^(relay/?)?lcc10/(key|writeup)(/|\.pdf)?$ https://kechpaja.conlang.o
 
 # documentation
 RewriteRule ^git(hub)?/?$ https://github.com/saizai/unlws [L,R=302,NC]
-RewriteRule ^sketchbook/?$ https://drive.google.com/folderview?id%3D19XY8V7wFicizkSxlV8PkDUNdbCC6uIUX [L,R=302,NC]
+RewriteRule ^sketchbook/?$ https://drive.google.com/drive/folders/1Poz0DIQYm7d9ZJQviN3yKzat00HC9xTq [L,R=302,NC]
 RewriteRule ^scratchpad/1/?$ https://docs.google.com/drawings/d/1k1qaEHNRSGNsH0pJvvGtPe6ZSHFUmlpnwyZbcjIK7uQ/edit [L,R=302,NC]
 RewriteRule ^scratchpad/2/?$ https://docs.google.com/drawings/d/1Q5GqpwrpfsUXOU-l9hdRkTDFx3Zc9BTgrUiu5tsczmI/edit [L,R=302,NC]
 ## note that there exists renderer/ - don't overwrite that path
 RewriteRule ^design/renderer/?$ https://docs.google.com/document/d/1iQS-oAaCk2mpT2h6nLK8AAvYH84n4_aHvZT7dDo_MeY/edit [L,R=302,NC]
 RewriteRule ^design/dsl/?$ https://docs.google.com/document/d/1BfuloI902lfpVOC6UFhrx3pO-WYRaoGCd8IhUxrhCfA/edit [L,R=302,NC]
-RewriteRule ^(essays/?)(design/?)odil/?$ https://s.ai/essays/on_the_design_of_an_ideal_language [L,R=302,NC]
-RewriteRule ^(essays/?)(design/?)nlf2dws/?$ https://s.ai/essays/nlf2dws [L,R=302,NC]
+RewriteRule ^(essays/)?(design/)?odil/?$ https://s.ai/essays/on_the_design_of_an_ideal_language [L,R=302,NC]
+RewriteRule ^(essays/)?(design/)?nlf2dws/?$ https://s.ai/essays/nlf2dws [L,R=302,NC]
 
 # community
 RewriteRule ^d(iscord)?/?$ https://discord.gg/t9dGhpk7Jh [L,R=302,NC]
