@@ -186,7 +186,7 @@ RewriteRule ^(relay/?)?lcc10/(key|writeup)(/|\.pdf)?$ https://kechpaja.conlang.o
 
 # documentation
 RewriteRule ^git(hub)?/?$ https://github.com/saizai/unlws [L,R=302,NC]
-RewriteRule ^sketchbook/?$ httphttps://drive.google.com/folderview?id%3D19XY8V7wFicizkSxlV8PkDUNdbCC6uIUX [L,R=302,NC]
+RewriteRule ^sketchbook/?$ https://drive.google.com/folderview?id%3D19XY8V7wFicizkSxlV8PkDUNdbCC6uIUX [L,R=302,NC]
 RewriteRule ^scratchpad/1/?$ https://docs.google.com/drawings/d/1k1qaEHNRSGNsH0pJvvGtPe6ZSHFUmlpnwyZbcjIK7uQ/edit [L,R=302,NC]
 RewriteRule ^scratchpad/2/?$ https://docs.google.com/drawings/d/1Q5GqpwrpfsUXOU-l9hdRkTDFx3Zc9BTgrUiu5tsczmI/edit [L,R=302,NC]
 ## note that there exists renderer/ - don't overwrite that path
