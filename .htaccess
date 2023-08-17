@@ -1,0 +1,172 @@
+# RewriteCond teststring condpattern [flags]
+
+## conditons
+### special case
+# if teststring is  expr  condpattern treated as ap_expr  https://httpd.apache.org/docs/2.4/expr.html
+### negate !some_condition
+### cmparison
+# <CondPattern leixcal proceed
+# >CondPattern leixcal follow
+# =CondPattern lexical equal  if CondPattern is "" compares to empty string
+# <=CondPattern lexical preceed or equal
+# >=CondPattern lexical follow or equal
+# -eq numeric =
+# -ge numeric >=
+# -gt numeric >
+# -le numeric <=
+# -lt numeric <
+# -ne numeric !=  equivalent to !-eq
+### tests
+# -d  is directory
+# -f  is regular file
+# -F  is existing file via subrequest
+# -h  is symlink
+# -l  is symlink
+# -L  is symlink
+# -s  is regular file with size > 0
+# -U  is existing accessible URL via subrequest
+# -x  is executable
+
+## flags - in [] and comma separated
+# nocase  NC  make test case insensitive
+# ornext  OR  or-combine with next condition, otherwise it's and-combine
+# novary  NV  if HTTP header is in condition, don't add it to the Vary header of response
+
+## variables
+### environment variables  %{ ENV:variable_name }
+### HTTP mime header %{ HTTP:header_name } e.g. Proxy-Connection
+### server variables  %{ VARIABLE_NAME }
+# HTTP headers:
+#  HTTP_ACCEPT
+#  HTTP_COOKIE
+#  HTTP_FORWARDED
+#  HTTP_HOST
+#  HTTP_PROXY_CONNECTION
+#  HTTP_REFERER
+#  HTTP_USER_AGENT
+# connection & request:
+#  AUTH_TYPE
+#  CONN_REMOTE_ADDR
+#  CONTEXT_PREFIX
+#  CONTEXT_DOCUMENT_ROOT
+#  IPV6
+#  PATH_INFO
+#  QUERY_STRING
+#  REMOTE_ADDR
+#  REMOTE_HOST
+#  REMOTE_IDENT
+#  REMOTE_PORT
+#  REMOTE_USER
+#  REQUEST_METHOD
+#  SCRIPT_FILENAME
+#### date/time
+#  TIME_YEAR
+#  TIME_MON
+#  TIME_DAY
+#  TIME_HOUR
+#  TIME_MIN
+#  TIME_SEC
+#  TIME_WDAY
+#  TIME
+#### special
+#  API_VERSION
+#  CONN_REMOTE_ADDR
+#  HTTPS "on" or "off"
+#  IS_SUBREQ
+#  REMOTE_ADDR IP of remote
+#  REQUEST_FILENAME  full local filesystem path to the file matching the request
+#  REQUEST_SCHEME  scheme, eg "http" or "https"
+#  REQUEST_URI path component of requested URI, eg "/index.html", excluding query string
+#  THE_REQUEST
+
+
+# RewriteRule pattern substitution [flags]
+
+## substitutions
+# file_system_path
+# url_path
+# absolute_path
+# - no substitution
+# $N  N=0..9, backreference to RewriteRule pattern, eg ^localpath(.*) otherpath$1
+# %N  N=0..9, backreference to last matched RewriteCond pattern
+# %{VARNAME}  server variable
+# ${mapname:key|default}  mapping function  https://httpd.apache.org/docs/2.4/mod/mod_rewrite.html#mapfunc
+
+## flags
+# B escape nonalpha in ackreference before applying
+# backrefnoplus|BNP if escaping backreference, space goes to %20 not +
+# chain|C if this rule fails, skip next rule
+# cookie|CO=NAME:VAL  set cookie  CO=NAME:VAL:domain[:lifetime[:path[:secure[:httponly[samesite]]]]]
+# discardpath|DP  discard PATH_INFO part of rewritten URI
+# END don't apply any more rules in current round, same as L, but also prevents subsequent rewrite processing
+# env|E=[!]VAR[:VAL]  set environment variable VAR to VAL, or if !VAR, unset variable
+# forbidden|F 403 forbidden
+# gone|G 410 gone
+# Handler|H=Content-handler send to a content handler
+# last|L don't apply any mre rules
+# next|N rerun rewrite at first rule using current result as start point
+# nocase|NC  pattern comparison case insensitive
+# noescape|NE  don't hexcode escape special chars in redirections
+# nosubreq|NS  skip this rule if within an internal subrequest
+# proxy|P make substitution URL be sent internally as a proxy request
+# passthrough|PT  pass result back to URL mapping for processing other URI-to-filename translators, eg Alias or Redirect
+# qsappend|QSA append query string from original request URL to query string created in rewrite target
+# qsdiscard\QSD discard incoming query string
+# qslast|QSL interpret last (right-most) ? as query string delimiter instead of first (left-most) one
+# redirect|R[=code] exteral redirect with optional HTTP status code
+# skip|S=num  skip next num rules if this matches
+# type|T=MIME-type  set MIME-type of target as specified
+
+## HTTP status codes  https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+# 200 OK
+# 204 no content but yes headers
+# 205 reset document that sent this
+# 300 multiple possible responses; eg give HTML links to options
+# 301 moved permanently
+# 302 found - changed temporarily, use this URI in future
+# 303 see other
+# 304 not modified (caching)
+# 307 temporary redirect - same as 302 but must keep HTTP method (get/put/post/etc)
+# 308 permanent redirect - same as 301 but must keep HTTP method (get/put/post/etc)
+# 400 bad request - client error
+# 401 unauthorized - eg server doesn't know client ID
+# 402 payment required
+# F 403 forbidden - like 401 but server does know client ID
+# 404 not found (or secret 403)
+# 405 method not allowed (but URI is ok)
+# 406 content negotiation criteria not acceptable
+# 407 proxy auth req'd - like 401 but for proxies
+# 408 request timeout
+# 409 conflict with current state of server
+# G 410 gone - permanently deleted, clear cache
+# 418 server is teapot and refuses to brew coffee
+# 421 misdirected request - should've been sent to a different server
+# 425 too early - might be replay / DOS attack
+# 426 portocol upgrade required https://developer.mozilla.org/en-US/docs/Web/HTTP/Protocol_upgrade_mechanism
+# 429 too many requests - rate limiting / DOS
+# 451 unavailable for legal reasons
+# 500 server error
+# 501 not implemented
+# 503 service unavailable - eg down for maintenance; should add Retry-After header
+# 505 HTTP version not supported
+# 508 infinite loop detected
+
+# main
+RewriteRule ^/nlws/gdoc$ [OR,NC]
+RewriteRule ^/nlws/doc$ https://docs.google.com/document/d/1Ndb-xx2YaZhJWnKfLdnpa-hnhOGUdbm0vhY1JOeG3IQ/edit [L,R=302,NC]
+
+# texts and talks
+RewriteRule ^/nlws/lcc7$ https://youtube.com/playlist?list=PLfijmJ80EzetjLLUaQDsaufc6yAnkFOq3 [L,R=302,NC]
+RewriteRule ^/nlws/lcc7/outline$ https://docs.google.com/document/d/1O0bcivQHfBNDrT0xqhUqjwoAwVFh__taCOn1Mq8t4nA/edit [L,R=302,NC]
+RewriteRule ^/nlws/g4g$ https://drive.google.com/file/d/1ky9EEZCMkFSRzDwjTfKBfSEeyH7hzD_i/view [L,R=302,NC]
+RewriteRule ^/nlws/st_francis$ [OR,NC]
+RewriteRule ^/nlws/francis$ /poetry/st_francis [L,R=302,NC]
+
+# community
+RewriteRule ^/nlws/discord$ https://discord.gg/t9dGhpk7Jh [L,R=302,NC]
+
+RewriteRule ^/nlws/community$ https://drive.google.com/drive/folders/17osHvypK-DHYB8uvdjXfP7YS21xShl-T [L,R=302,NC]
+RewriteRule ^/nlws/community/examples$ https://docs.google.com/document/d/11zZ6CwxSX4NARl3jY8lJ6cjlF15w1b2YzXYITNHjons/edit?usp=drivesdk [L,R=302,NC]
+RewriteRule ^/nlws/community/proposals$ https://docs.google.com/document/d/1kwF3hZTsih_mz3e1_n6yBXuO9pdieF6W5X-_0K1Ty4Y/edit?usp=drivesdk [L,R=302,NC]
+RewriteRule ^/nlws/community/gdoc$ [OR,NC]
+RewriteRule ^/nlws/community/doc$ https://docs.google.com/document/d/1jY9hS1rMZC5NQB07jLVQdMn9IlCSYbQwLInW0SnuxeI/edit?usp=drivesdk [L,R=302,NC]
