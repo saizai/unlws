@@ -166,6 +166,7 @@ RewriteRule ^lcc7/outline/?$ https://docs.google.com/document/d/1O0bcivQHfBNDrT0
 ## poetry
 RewriteRule ^(poetry/)?(st_)?francis/?$ /poetry/st_francis [L,R=302,NC]
 RewriteRule ^(poetry/)?(st_)?francis/(key|writeup)(/|\.png)?$ /nlws/francis_explanation.png [L,R=302,NC]
+RewriteRule ^(poetry/)?(st_)?francis/sketch/?$ https://docs.google.com/drawings/d/1XIAQ8Ry5cTS129lCTSmlJ2kHpLlWpMKSBT6S8kIkAPY/edit [L,R=302,NC]
 RewriteRule ^(poetry/)?(distant_)love/?$ http://s.ai/poetry/distant_love [L,R=302,NC]
 RewriteRule ^(poetry/)?g4g/?$ https://drive.google.com/file/d/1ky9EEZCMkFSRzDwjTfKBfSEeyH7hzD_i/view [L,R=302,NC]
 
