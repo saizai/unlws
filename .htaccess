@@ -180,7 +180,7 @@ RewriteRule ^(relay/?)?19(/torch)?\.png$ https://000024.org/conlang/relay19/torc
 RewriteRule ^(relay/?)?19/grammar(/|\.pdf)?$ https://000024.org/conlang/relay19/grammar.pdf [L,R=302,NC]
 RewriteRule ^(relay/?)?19/(key|writeup)/?$ https://000024.org/conlang/relay19/index.html [L,R=302,NC]
 RewriteRule ^(relay/?)?19(/torch)?/colou?r(ed)?(\.png)?$ https://000024.org/conlang/relay19/torch_coloured.png [L,R=302,NC]
-RewriteRule ^(relay/?)?19(/torch)?/region(\.png)?$ https://000024.org/conlang/relay19/torch_numbered.png [L,R=302,NC]
+RewriteRule ^(relay/?)?19(/torch)?/(regions?|number(ed)?)(\.png)?$ https://000024.org/conlang/relay19/torch_numbered.png [L,R=302,NC]
 RewriteRule ^(relay/?)?lcc10(/torch)?(/|\.pdf)?$ https://kechpaja.conlang.org/lcc/10/relay/i/fink_sai_unlws.pdf [L,R=302,NC]
 RewriteRule ^(relay/?)?lcc10/(key|writeup)(/|\.pdf)?$ https://kechpaja.conlang.org/lcc/10/relay/i/fink_sai_unlws_english.pdf [L,R=302,NC]
 
