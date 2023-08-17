@@ -157,8 +157,8 @@ RewriteRule ^(gdoc|doc)/?$ https://docs.google.com/document/d/1Ndb-xx2YaZhJWnKfL
 
 # talks
 RewriteRule ^lcc1/?$ https://www.youtube.com/watch?v=LBha8bJfRvw&list=PL17178436AFEC245A&index=5 [L,R=302,NC]
-RewriteRule ^(lcc3|schuyler)/?$ http://ouwi.org/presentation/html/nl2dws.html [L,R=302,NC]
-RewriteRule ^(lcc3|schuyler)/video/?$ https://www.youtube.com/watch?v=Poe-HXKitw4&list=PLB1936739D3838148 [L,R=302,NC]
+RewriteRule ^(lcc3|schuyler)(/video)?/?$ https://www.youtube.com/watch?v=Poe-HXKitw4&list=PLB1936739D3838148 [L,R=302,NC]
+RewriteRule ^(lcc3|schuyler)/slides/?$ https://web.archive.org/web/20181125150527/http://ouwi.org:80/presentation/html/nl2dws.html [L,R=302,NC]
 RewriteRule ^lcc7/?$ https://www.youtube.com/watch?v=MYqgocVZINA&list=PLfijmJ80EzetjLLUaQDsaufc6yAnkFOq3 [L,R=302,NC]
 RewriteRule ^lcc7/outline/?$ https://docs.google.com/document/d/1O0bcivQHfBNDrT0xqhUqjwoAwVFh__taCOn1Mq8t4nA/edit [L,R=302,NC]
 
