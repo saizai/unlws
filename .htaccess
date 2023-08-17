@@ -174,7 +174,7 @@ RewriteRule ^(poetry/)?g4g/?$ https://drive.google.com/file/d/1ky9EEZCMkFSRzDwjT
 RewriteRule ^(relay/?)?lcc5(/torch)?(/|\.pdf)?$ http://conlang.org/cms/wp-content/uploads/lexis_and_text.pdf [L,R=302,NC]
 RewriteRule ^(relay/?)?lcc5/grammar(/|\.pdf)?$ http://conlang.org/cms/wp-content/uploads/grammar.pdf [L,R=302,NC]
 RewriteRule ^(relay/?)?lcc5/(key|writeup)/?$ http://conlang.org/language-creation-conference/lcc5/10-unlws/ [L,R=302,NC]
-RewriteRule ^(relay/?)?lcc5/video/?$ https://youtube.com/playlist?list%3DPLOSXnL88bvWsA4Q5FuVR4-_WYZ3279pwv [L,R=302,NC]
+RewriteRule ^(relay/?)?lcc5/video/?$ https://www.youtube.com/watch?v=3f9V3NVQJoc&list=PLOSXnL88bvWsA4Q5FuVR4-_WYZ3279pwv&index=20 [L,R=302,NC]
 RewriteRule ^(relay/?)?19(/torch)?(/|\.pdf)?$ https://000024.org/conlang/relay19/torch.pdf [L,R=302,NC]
 RewriteRule ^(relay/?)?19(/torch)?\.png$ https://000024.org/conlang/relay19/torch.png [L,R=302,NC]
 RewriteRule ^(relay/?)?19/grammar(/|\.pdf)?$ https://000024.org/conlang/relay19/grammar.pdf [L,R=302,NC]
