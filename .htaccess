@@ -203,6 +203,10 @@ RewriteRule ^slack/?$ https://unlws.slack.com/ [L,R=302,NC]
 RewriteRule ^slack/invite/?$ https://join.slack.com/t/unlws/shared_invite/zt-fnkw2tc6-bx~QPQcUBJyRbSMWnwgoMg [L,R=302,NC]
 
 RewriteRule ^c(ommunity)?/?$ https://drive.google.com/drive/folders/17osHvypK-DHYB8uvdjXfP7YS21xShl-T [L,R=302,NC]
-RewriteRule ^c(ommunity)?/g?doc/?$ https://docs.google.com/document/d/1jY9hS1rMZC5NQB07jLVQdMn9IlCSYbQwLInW0SnuxeI/edit?usp=drivesdk [L,R=302,NC]
-RewriteRule ^c(ommunity)?/examples/?$ https://docs.google.com/document/d/11zZ6CwxSX4NARl3jY8lJ6cjlF15w1b2YzXYITNHjons/edit?usp=drivesdk [L,R=302,NC]
-RewriteRule ^c(ommunity)?/proposals/?$ https://docs.google.com/document/d/1kwF3hZTsih_mz3e1_n6yBXuO9pdieF6W5X-_0K1Ty4Y/edit?usp=drivesdk [L,R=302,NC]
+RewriteRule ^c(ommunity)?/g?doc/?$ https://docs.google.com/document/d/1jY9hS1rMZC5NQB07jLVQdMn9IlCSYbQwLInW0SnuxeI/edit [L,R=302,NC]
+RewriteRule ^c(ommunity)?/examples/?$ https://docs.google.com/document/d/11zZ6CwxSX4NARl3jY8lJ6cjlF15w1b2YzXYITNHjons/edit [L,R=302,NC]
+RewriteRule ^c(ommunity)?/proposals/?$ https://docs.google.com/document/d/1kwF3hZTsih_mz3e1_n6yBXuO9pdieF6W5X-_0K1Ty4Y/edit [L,R=302,NC]
+
+## UNLWS root folder. Requires gdrive access via group.
+RewriteRule ^full/?$ https://drive.google.com/drive/folders/0BzmetJxi-p0VSU9wWXcwMFRyeUk [L,R=302,NC]
+RewriteRule ^(g(oogle)?)?g(roup)?/?$ https://groups.google.com/g/unlws [L,R=302,NC]
