@@ -1,5 +1,6 @@
 # RewriteCond teststring condpattern [flags]
 
+
 ## conditons
 ### special case
 # if teststring is  expr  condpattern treated as ap_expr  https://httpd.apache.org/docs/2.4/expr.html
