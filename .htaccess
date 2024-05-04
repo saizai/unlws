@@ -267,4 +267,4 @@ RewriteRule ^UB51$ https://drive.google.com/file/d/1zgDLVIPis-bbGmhHrp8uPPD3RfMf
 RewriteRule ^UB52$ https://drive.google.com/file/d/141THIdxYgbaIejV18Cjrut8omtmmkHUL/view [L,R=302,NC]
 RewriteRule ^UB53$ https://drive.google.com/file/d/1ifJ1tLOXHEV2TqIBmfo7oXCdR3XjFAPB/view [L,R=302,NC]
 RewriteRule ^UB54$ https://drive.google.com/file/d/1RIQTyVUHeN8h25rtVCz_7mWHdBlPC7sn/view [L,R=302,NC]
-RewriteRule ^UB55$ https://drive.google.com/file/d/1RXv9f_W-aBW1vTmotY_A1Z3_GIbUr9-G/view [L,R=302,NC]
+RewriteRule ^UB55$ https://drive.google.com/file/d/1Ra-kGP7OD6btnwpp93lY3Y3L8FsprsEm/view [L,R=302,NC]
