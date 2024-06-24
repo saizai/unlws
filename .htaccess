@@ -197,6 +197,7 @@ RewriteRule ^design/renderer/?$ https://docs.google.com/document/d/1iQS-oAaCk2mp
 RewriteRule ^design/dsl/?$ https://docs.google.com/document/d/1BfuloI902lfpVOC6UFhrx3pO-WYRaoGCd8IhUxrhCfA/edit [L,R=302,NC]
 RewriteRule ^(essays/)?(design/)?odil/?$ https://s.ai/essays/on_the_design_of_an_ideal_language [L,R=302,NC]
 RewriteRule ^(essays/)?(design/)?nlf2dws/?$ https://s.ai/essays/nlf2dws [L,R=302,NC]
+RewriteRule ^(essays/)?(design/)?lakoff/?$ https://drive.google.com/drive/folders/0BzmetJxi-p0VcEVWeGNWc1pkSWM?resourcekey=0-fzyquvHdnU1uqF9IGDMQHg [L,R=302,NC]
 
 # community
 RewriteRule ^d(iscord)?/?$ https://discord.gg/t9dGhpk7Jh [L,R=302,NC]
