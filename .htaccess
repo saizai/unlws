@@ -265,7 +265,7 @@ RewriteRule ^UB48$ https://drive.google.com/uc?id=1UEvA-KFKxbh-3FqBiLPy5IqgBT3VX
 RewriteRule ^UB49$ https://drive.google.com/uc?id=1mUFz0Rgzc2J1RCzkgHiEGqGRsQKp-1Az [L,R=302,NC]
 RewriteRule ^UB50$ https://drive.google.com/uc?id=18OxmyNBs41CST5Ns06lMCO4nLvU2h5Hj [L,R=302,NC]
 RewriteRule ^UB51$ https://drive.google.com/uc?id=1zgDLVIPis-bbGmhHrp8uPPD3RfMfIfDJ [L,R=302,NC]
-RewriteRule ^UB52$ https://drive.google.com/uc?id=141THIdxYgbaIejV18Cjrut8omtmmkHUL [L,R=302,NC]
+RewriteRule ^UB52$ https://drive.google.com/uc?id=1Itm35jGuEHQbI1t8oEMGgc2nNg2Rqy_9 [L,R=302,NC]
 RewriteRule ^UB53$ https://drive.google.com/uc?id=1ifJ1tLOXHEV2TqIBmfo7oXCdR3XjFAPB [L,R=302,NC]
 RewriteRule ^UB54$ https://drive.google.com/uc?id=1RIQTyVUHeN8h25rtVCz_7mWHdBlPC7sn [L,R=302,NC]
 RewriteRule ^UB55$ https://drive.google.com/uc?id=1Ra-kGP7OD6btnwpp93lY3Y3L8FsprsEm [L,R=302,NC]
