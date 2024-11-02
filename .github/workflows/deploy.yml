@@ -9,7 +9,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
+      with:
+        lfs: true
     - name: rsync deployments
       uses: burnett01/rsync-deployments@4.1
       with:
