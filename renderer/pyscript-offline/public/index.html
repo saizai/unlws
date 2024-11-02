@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PyScript Offline</title>
-  <script type="module" src="/pyscript/core.js"></script>
-  <link rel="stylesheet" href="/pyscript/core.css">
+  <script type="module" src="./pyscript/core.js"></script>
+  <link rel="stylesheet" href="./pyscript/core.css">
 </head>
 <body>
   <mpy-config>
-    interpreter = "/micropython/micropython.mjs"
+    interpreter = "./micropython/micropython.mjs"
   </mpy-config>
   <script type="mpy">
     from pyscript import document
@@ -18,7 +18,7 @@
   </script>
 <hr/>
   <py-config>
-    interpreter = "/pyodide/pyodide.mjs"
+    interpreter = "./pyodide/pyodide.mjs"
     packages = ["pandas"]
   </py-config>
   <script type="py">
