@@ -1,0 +1,55 @@
+Metadata-Version: 2.1
+Name: primecountpy
+Version: 0.1.0
+Summary: Cython interface for C++ primecount library
+Home-page: https://github.com/dimpase/primecountpy
+Author: SageMath Developers
+Author-email: sage-devel@googlegroups.com
+License: GPLv3
+Project-URL: User Manual, https://primecountpy.readthedocs.io
+Project-URL: Bug Tracker, https://github.com/dimpase/primecountpy/issues
+Classifier: Development Status :: 2 - Pre-Alpha
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Scientific/Engineering :: Mathematics
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+License-File: AUTHORS
+Requires-Dist: Cython
+Requires-Dist: cysignals
+
+# Primecount Cython interface
+
+This is a Cython interface to the C++ library [primecount](https://github.com/kimwalisch/primecount).
+
+We have split out primecount [SageMath](https://sagemath.org) spkg with its Cython interface.
+
+Quick installation and testing:
+
+1) Install primecount C++ library
+```
+cd /tmp/
+git clone https://github.com/kimwalisch/primecount
+cd primecount
+cmake . -DBUILD_SHARED_LIBS=ON
+make -j
+sudo make install
+sudo ldconfig # linux only
+```
+2) in this repo, do
+```
+python3 setup.py install --user
+```
+3)
+
+`python3`
+and
+```
+>>> import primecountpy as primecount
+>>> primecount.pi(1000)
+```
+
+More details on installation without root (sudo) access,
+and testing with `pytest`, may be found in the [manual](https://primecountpy.readthedocs.io).

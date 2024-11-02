@@ -1,0 +1,58 @@
+Metadata-Version: 2.1
+Name: memory_allocator
+Version: 0.1.4
+Summary: An extension class to allocate memory easily with cython
+Author-email: "Jeroen Demeyer, Nathann Cohen, Jonathan Kliem" <sage-devel@googlegroups.com>
+License: GPLv3
+Project-URL: Homepage, https://github.com/sagemath/memory_allocator
+Classifier: Development Status :: 6 - Mature
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Programming Language :: Cython
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Scientific/Engineering :: Mathematics
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+License-File: AUTHORS
+Requires-Dist: Cython
+
+# MemoryAllocator
+An extension class to allocate memory easily with cython.
+
+This extension class started as part of the [Sage](https://sagemath.org) software.
+
+It provides a single extension class `MemoryAllocator` with `cdef` methods
+
+- `malloc`,
+- `calloc`,
+- `alloarray`,
+- `realloc`,
+- `reallocarray`,
+- `aligned_malloc`,
+- `aligned_calloc`,
+- `aligned_allocarray`.
+
+Memory is freed when the instance of `MemoryAllocator` is deallocated.
+On failure to allocate the memory, a proper error is raised.
+
+# Changelog
+
+## 0.1.4
+
+- Modernize Python metadata, require Python >= 3.8.
+  [#9](https://github.com/sagemath/memory_allocator/pull/9) by @mkoeppe
+- Add missing `noexcept` clauses for Cython 3
+  [#8](https://github.com/sagemath/memory_allocator/pull/8) by @tornaria
+
+## 0.1.3
+
+- Python 3.11 compatible.
+
+## 0.1.2
+
+- Provide wheels build by github actions.
+
+## 0.1.1
+
+- Fixed doctests on 32bit systems.

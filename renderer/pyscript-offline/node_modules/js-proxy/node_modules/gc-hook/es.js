@@ -1,0 +1,1 @@
+const e=new FinalizationRegistry((([e,n,r])=>{r&&console.debug(`Held value ${String(n)} not relevant anymore`),e(n)})),n=Object.create(null),r=(r,t,{debug:o,handler:l,return:u,token:a=r}=n)=>{const i=u||new Proxy(r,l||n),s=[i,[t,r,!!o]];return!1!==a&&s.push(a),e.register(...s),i},t=n=>e.unregister(n);export{r as create,t as drop};

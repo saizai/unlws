@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PyScript Offline</title>
+  <script type="module" src="/pyscript/core.js"></script>
+  <link rel="stylesheet" href="/pyscript/core.css">
+</head>
+<body>
+  <mpy-config>
+    interpreter = "/micropython/micropython.mjs"
+  </mpy-config>
+  <script type="mpy">
+    from pyscript import document
+
+    document.body.append("Hello from PyScript micropython")
+  </script>
+<hr/>
+  <py-config>
+    interpreter = "/pyodide/pyodide.mjs"
+    packages = ["pandas"]
+  </py-config>
+  <script type="py">
+    from pyscript import document
+
+    document.body.append("Hello from PyScript pyodide")
+
+    import pandas as pd
+    x = pd.Series([1,2,3,4,5,6,7,8,9,10])
+
+    from pyscript import document
+    document.body.append(str([i**2 for i in x]))
+  </script>
+</body>
+</html>

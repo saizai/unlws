@@ -1,0 +1,1 @@
+const t={object(...t){return this.string(function(t){for(var e=t[0],r=1,n=arguments.length;r<n;r++)e+=arguments[r]+t[r];return e}(...t))},string(t){for(const e of t.split(/[\r\n]+/))if(e.trim().length){/^(\s+)/.test(e)&&(t=t.replace(new RegExp("^"+RegExp.$1,"gm"),""));break}return t}},e=(e,...r)=>t[typeof e](e,...r);export{e as default};

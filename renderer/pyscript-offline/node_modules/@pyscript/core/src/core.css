@@ -1,0 +1,75 @@
+py-script,
+py-config,
+mpy-script,
+mpy-config {
+    display: none;
+}
+
+/* PyEditor */
+.py-editor-box,
+.mpy-editor-box {
+    padding: 0.5rem;
+}
+.py-editor-input,
+.mpy-editor-input {
+    position: relative;
+}
+.py-editor-box::before,
+.mpy-editor-box::before {
+    content: attr(data-env);
+    display: block;
+    font-size: x-small;
+    text-align: end;
+}
+.py-editor-output,
+.mpy-editor-output {
+    white-space: pre;
+}
+.py-editor-run-button,
+.mpy-editor-run-button {
+    position: absolute;
+    right: 0.5rem;
+    bottom: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.25s;
+    z-index: 1;
+}
+.py-editor-box:hover .py-editor-run-button,
+.mpy-editor-box:hover .mpy-editor-run-button,
+.py-editor-run-button:focus,
+.py-editor-run-button:disabled,
+.mpy-editor-run-button:focus,
+.mpy-editor-run-button:disabled {
+    opacity: 1;
+}
+
+@keyframes spinner {
+    to {
+        transform: rotate(360deg);
+    }
+}
+.py-editor-run-button:disabled > *,
+.mpy-editor-run-button:disabled > * {
+    display: none; /* hide all the child elements of the run button when it is disabled */
+}
+.py-editor-run-button:disabled,
+.mpy-editor-run-button:disabled {
+    border-width: 0;
+}
+.py-editor-run-button:disabled::before,
+.mpy-editor-run-button:disabled::before {
+    content: "";
+    box-sizing: border-box;
+    position: absolute;
+    top: 100%;
+    left: 100%;
+    width: 20px;
+    height: 20px;
+    margin-top: -23px; /* hardcoded value to center the spinner on the run button */
+    margin-left: -26px; /* hardcoded value to center the spinner on the run button */
+    border-radius: 50%;
+    border: 2px solid #aaa;
+    border-top-color: #000;
+    background-color: #fff;
+    animation: spinner 0.6s linear infinite;
+}
