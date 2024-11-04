@@ -8,26 +8,60 @@
   <link rel="stylesheet" href="./pyscript/core.css">
 </head>
 <body>
+  <svg id="svgboard" width="768px" xmlns="http://www.w3.org/2000/svg" viewBox="-6 -6 12 12"
+    style="border:1px solid #000; display: block; margin-left: auto; margin-right: auto;">
+    <style>
+      .unlws,.unlws path {fill: none; stroke: #153360; stroke-width: 0.08333333333333;}
+    </style>
+    <defs>
+      <g class="unlws">
+        <g id="firstsg">
+          <path d="M0 1L0-1L-1 0L0.5 0"></path>
+        </g>
+       <g id="cat">
+          <path d="M1 0L0 0C-1 0-1-1.25 0-1"></path>
+          <path d="M-1-1.125L-0.833333-1.75L-0.333333-1.375C0.333333-2 0.75-1.25 0.166667-0.625"></path>
+        </g>
+        <g id="communicate">
+          <path d="M0 0L1 0"></path>
+          <path d="M0 0L0-1.25"></path>
+          <path d="M0-1L1 0"></path>
+        </g>
+      </g>
+    </defs>
+  </svg>
+<hr/>
   <mpy-config>
     interpreter = "./micropython/micropython.mjs"
   </mpy-config>
   <script type="mpy">
     from pyscript import document
 
-    document.body.append("Hello from PyScript micropython")
+    document.body.append("Hello from PyScript micropython ")
   </script>
-<hr/>
   <py-config>
     interpreter = "./pyodide/pyodide.mjs"
     packages = ["micropip","pandas"]
   </py-config>
   <script type="py">
     from pyscript import document
-    document.body.append("Hello from PyScript pyodide")
-    import pandas as pd
-    x = pd.Series([1,2,3,4,5,6,7,8,9,10])
+    document.body.append("Hello from PyScript pyodide ")
 
-    document.body.append(str([i**2 for i in x]))
+    board = document.querySelector("#svgboard")
+    e = document.createElementNS("http://www.w3.org/2000/svg", "use")
+    e.setAttribute("href", "#firstsg")
+    e.setAttribute("transform", "translate(-2 0) rotate(-90)")
+    board.appendChild(e)
+    e2 = document.createElementNS("http://www.w3.org/2000/svg", "use")
+    e2.setAttribute("href", "#cat")
+    e2.setAttribute("transform", "translate(2 0) rotate(180)")
+    board.appendChild(e2)
+    #f = document.createElementNS("http://www.w3.org/2000/svg", "circle")
+    #f.setAttribute("cx", "0")
+    #f.setAttribute("cy", "0")
+    #f.setAttribute("r", "1")
+    #f.setAttribute("fill", "red")
+    #board.appendChild(f)
   </script>
 </body>
 </html>
