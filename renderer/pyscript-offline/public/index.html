@@ -6,31 +6,19 @@
   <title>PyScript Offline</title>
   <script type="module" src="./pyscript/core.js"></script>
   <link rel="stylesheet" href="./pyscript/core.css">
+  <style>
+    #svgboard > svg {
+      display: block; 
+      margin-left: auto; 
+      margin-right: auto;
+    }
+  </style>
 </head>
 <body>
-  <svg id="svgboard" width="768px" xmlns="http://www.w3.org/2000/svg" viewBox="-6 -6 12 12"
-    style="border:1px solid #000; display: block; margin-left: auto; margin-right: auto;">
-    <style>
-      .unlws,.unlws path {fill: none; stroke: #153360; stroke-width: 0.08333333333333;}
-    </style>
-    <defs>
-      <g class="unlws">
-        <g id="firstsg">
-          <path d="M0 1L0-1L-1 0L0.5 0"></path>
-        </g>
-       <g id="cat">
-          <path d="M1 0L0 0C-1 0-1-1.25 0-1"></path>
-          <path d="M-1-1.125L-0.833333-1.75L-0.333333-1.375C0.333333-2 0.75-1.25 0.166667-0.625"></path>
-        </g>
-        <g id="communicate">
-          <path d="M0 0L1 0"></path>
-          <path d="M0 0L0-1.25"></path>
-          <path d="M0-1L1 0"></path>
-        </g>
-      </g>
-    </defs>
-  </svg>
-<hr/>
+  <div id="svgboard">
+  </div>
+  <hr/>
   <script type="py" src="./main.py" config="./pyscript.json"></script>
 </body>
 </html>
+

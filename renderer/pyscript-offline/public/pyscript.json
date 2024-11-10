@@ -1,5 +1,10 @@
 {
-    "interpreter": "./pyodide/pyodide.mjs",
-    "packages": ["micropip"]
+  "interpreter": "./pyodide/pyodide.mjs",
+  "packages": ["micropip"],
+  "files": {
+    "./canvas.py": "",
+    "./emictext.py": "",
+    "./unlws_glyphs/glyphs.svg": "./unlws_glyphs/glyphs.svg"
+  }
 }
 
