@@ -1,0 +1,18 @@
+from pyscript import document
+document.body.append("Hello from PyScript pyodide ")
+
+board = document.querySelector("#svgboard")
+e = document.createElementNS("http://www.w3.org/2000/svg", "use")
+e.setAttribute("href", "#firstsg")
+e.setAttribute("transform", "translate(-2 0) rotate(-90)")
+board.appendChild(e)
+e2 = document.createElementNS("http://www.w3.org/2000/svg", "use")
+e2.setAttribute("href", "#cat")
+e2.setAttribute("transform", "translate(2 0) rotate(180)")
+board.appendChild(e2)
+#f = document.createElementNS("http://www.w3.org/2000/svg", "circle")
+#f.setAttribute("cx", "0")
+#f.setAttribute("cy", "0")
+#f.setAttribute("r", "1")
+#f.setAttribute("fill", "red")
+#board.appendChild(f)
