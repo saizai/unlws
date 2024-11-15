@@ -1,5 +1,5 @@
-from copy import deepcopy
 import xml.dom.minidom as minidom
+from glyphDictionary import SingleSVGGlyphDictionary
 
 class EmicText:
   """An UNLWS sentence, with the layout of how it sits on the page,"""
@@ -12,9 +12,7 @@ class EmicText:
     # The operations herein should be refactored into
     # dictionary handling, etc.
     
-    dictionary = minidom.parse('unlws_glyphs/glyphs.svg')
-    # There might be other g elements, but this should include all glyphs:
-    glyphs = dictionary.getElementsByTagName("g")
+    dictionary = SingleSVGGlyphDictionary('unlws_glyphs/glyphs.svg')
     
     svg = minidom.getDOMImplementation().createDocument("http://www.w3.org/2000/svg", "svg", None)
     svg.documentElement.setAttribute("xmlns", "http://www.w3.org/2000/svg")
@@ -22,17 +20,14 @@ class EmicText:
     svg.documentElement.setAttribute("width", "192px")
     svg.documentElement.setAttribute("viewBox", "-3 -2 6 4")
     
-    # FIXME: the dictionary isn't the right place to store style information
-    style = dictionary.getElementsByTagName("style")[0]
-    svg.documentElement.appendChild(style)
+    svg.documentElement.appendChild(dictionary.style)
     
-    # I hope copy.deepcopy acts OK on DOM objects.  It looks to.
-    firstsg = deepcopy([g for g in glyphs if g.getAttribute("id") == "I"][0])
+    firstsg = dictionary.svg_glyph_by_id("I")
     firstsg.setAttribute("transform", "translate(-2 0) rotate(-90)")
     svg.documentElement.appendChild(firstsg)
     
-    cat = deepcopy([g for g in glyphs if g.getAttribute("id") == "cat"][0])
+    cat = dictionary.svg_glyph_by_id("cat")
     cat.setAttribute("transform", "translate(2 0) rotate(180)")
     svg.documentElement.appendChild(cat)
-
+    
     return svg

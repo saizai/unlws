@@ -4,6 +4,7 @@
   "files": {
     "./canvas.py": "",
     "./emicText.py": "",
+    "./glyphDictionary.py": "",
     "./unlws_glyphs/glyphs.svg": "./unlws_glyphs/glyphs.svg"
   }
 }
