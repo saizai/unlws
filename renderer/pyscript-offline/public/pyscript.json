@@ -3,7 +3,7 @@
   "packages": ["micropip"],
   "files": {
     "./canvas.py": "",
-    "./emictext.py": "",
+    "./emicText.py": "",
     "./unlws_glyphs/glyphs.svg": "./unlws_glyphs/glyphs.svg"
   }
 }

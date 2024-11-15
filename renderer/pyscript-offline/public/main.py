@@ -1,7 +1,7 @@
 from pyscript import document
 document.body.append("Before importing... ")
 from canvas import HTMLDOMCanvas
-from emictext import EmicText
+from emicText import EmicText
 
 board = document.querySelector("#svgboard")
 canvas = HTMLDOMCanvas(board)
