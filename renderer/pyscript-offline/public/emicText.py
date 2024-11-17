@@ -29,6 +29,6 @@ class EmicText:
     svg.documentElement.appendChild(self.style)
     
     for glyph in self.glyphs:
-      svg.documentElement.appendChild(glyph.svg())
+      svg.documentElement.appendChild(glyph.svg(drawBPs = True))
     
     return svg

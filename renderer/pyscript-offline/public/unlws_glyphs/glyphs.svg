@@ -9,12 +9,12 @@
  <defs>
   <g id="I">
    <path d="M0 1L0-1L-1 0L0.5 0"></path>
-   <unlws-renderer:bp name="X" x="0" y="1" angle="-90??"/>
+   <unlws-renderer:bp name="X" x="0" y="1" angle="90"/>
   </g>
   <g id="cat">
    <path d="M1 0L0 0C-1 0-1-1.25 0-1"></path>
    <path d="M-1-1.125L-0.875-1.75L-0.5-1.375C0.333333-2 0.75-1.25 0.166667-0.625"></path>
-   <unlws-renderer:bp name="X" x="1" y="0" angle="0??"/>
+   <unlws-renderer:bp name="X" x="1" y="0" angle="0"/>
   </g>
  </defs>
 </svg>
