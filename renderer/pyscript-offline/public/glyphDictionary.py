@@ -1,5 +1,6 @@
 from copy import deepcopy
 import xml.dom.minidom as minidom
+from glyph import Glyph
 
 class GlyphDictionary:
   """An abstract class to retrieve glyphs from storage."""
@@ -25,9 +26,8 @@ class SingleSVGGlyphDictionary(GlyphDictionary):
   def style(self):
     return self._style
   
-  # TODO: make a Glyph class and make this return instances
-  def svg_glyph_by_id(self, id):
+  def glyph_by_id(self, id):
     g_elt = deepcopy([g for g in self.glyphs if g.getAttribute("id") == id][0])
     g_elt.removeAttribute("id")
-    return g_elt
+    return Glyph(g_elt)
 

@@ -1,3 +1,4 @@
+import math
 import xml.dom.minidom as minidom
 from glyphDictionary import SingleSVGGlyphDictionary
 
@@ -22,12 +23,18 @@ class EmicText:
     
     svg.documentElement.appendChild(dictionary.style)
     
-    firstsg = dictionary.svg_glyph_by_id("I")
-    firstsg.setAttribute("transform", "translate(-2 0) rotate(-90)")
-    svg.documentElement.appendChild(firstsg)
+    firstsg = dictionary.glyph_by_id("I")
+    firstsg.x = -2.
+    firstsg.y = 0.
+    firstsg.angle = -math.pi/2
+    #firstsg_elt.setAttribute("transform", "translate(-2 0) rotate(-90)")
+    svg.documentElement.appendChild(firstsg.svg())
     
-    cat = dictionary.svg_glyph_by_id("cat")
-    cat.setAttribute("transform", "translate(2 0) rotate(180)")
-    svg.documentElement.appendChild(cat)
+    cat = dictionary.glyph_by_id("cat")
+    cat.x = 2.
+    cat.y = 0.
+    cat.angle = math.pi
+    #cat_elt.setAttribute("transform", "translate(2 0) rotate(180)")
+    svg.documentElement.appendChild(cat.svg())
     
     return svg
