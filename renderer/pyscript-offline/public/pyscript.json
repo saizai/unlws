@@ -6,6 +6,7 @@
     "./emicText.py": "",
     "./glyph.py": "",
     "./glyphDictionary.py": "",
+    "./relLine.py": "",
     "./unlws_glyphs/glyphs.svg": "./unlws_glyphs/glyphs.svg"
   }
 }

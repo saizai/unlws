@@ -6,6 +6,7 @@ class EmicText:
   
   def __init__(self):
     self.glyphs = [] # glyphs in the sentence
+    self.rels = [] # rels in the sentence
     
     # FIXME: style does not belong in the dictionary
     dictionary = SingleSVGGlyphDictionary('unlws_glyphs/glyphs.svg')
@@ -13,6 +14,9 @@ class EmicText:
   
   def add_glyph(self, glyph):
     self.glyphs.append(glyph)
+  
+  def add_rel(self, rel):
+    self.rels.append(rel)
   
   def svg(self):
     """Return an SVG of this sentence as XML."""
@@ -29,6 +33,8 @@ class EmicText:
     svg.documentElement.appendChild(self.style)
     
     for glyph in self.glyphs:
-      svg.documentElement.appendChild(glyph.svg(drawBPs = True))
+      svg.documentElement.appendChild(glyph.svg())
+    for rel in self.rels:
+      svg.documentElement.appendChild(rel.svg())
     
     return svg

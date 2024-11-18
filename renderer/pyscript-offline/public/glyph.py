@@ -1,16 +1,48 @@
-from copy import deepcopy
+from copy import copy, deepcopy
 import math
 import xml.dom.minidom as minidom
 
 class BindingPoint:
   """An instance of a binding point, either within a glyph or a larger text.
   
-  Does not bear a name, only a position and orientation."""
-  def __init__(self, x = 0., y = 0., angle = 0.):
-    # Same conventions as on a Glyph object.
+  Properties:
+  host: the glyph this BP belongs to
+  name: the name of this BP within `host`"""
+  def __init__(self, x = 0., y = 0., handlex = None, handley = None,
+      angle = None, speed = 1.):
+    """Arguments:
+    x, y: coordinates in svg conventions
+    handlex, handley: coordinates of the spline handle
+    angle: angle in radians, 0 is rightward, positive is clockwise
+    speed: distance between the BP itself and its handle"""
     self.x = x
     self.y = y
-    self.angle = angle # in radians
+    if handlex != None and handley != None:
+      self.handlex = handlex
+      self.handley = handley
+    else:
+      if angle == None: angle = 0. # some default
+      self.handlex = x + speed * math.cos(angle)
+      self.handley = y + speed * math.sin(angle)
+  
+  def translate(self, dx, dy):
+    """Return a cooy of this BP translated by (dx, dy)."""
+    p = copy(self)
+    p.x += dx
+    p.y += dy
+    p.handlex += dx
+    p.handley += dy
+    return p
+  
+  def rotate(self, dangle):
+    """Return a cooy of this BP rotated around the origin by dangle."""
+    c, s = math.cos(dangle), math.sin(dangle)
+    p = copy(self)
+    p.x = c*self.x - s*self.y
+    p.y = s*self.x + c*self.y
+    p.handlex = c*self.handlex - s*self.handley
+    p.handley = s*self.handlex + c*self.handley
+    return p
 
 class Glyph:
   """An instance of a glyph within a text."""
@@ -33,11 +65,18 @@ class Glyph:
     self.angle = 0.
     
     # Binding points, as a hash from name to BP object.
-    self.bps = {}
+    # Stored in the coordinates of the lemma form, rather than as transformed.
+    self.lemma_bps = {}
   
   def addBP(self, name, bp):
     """Add a BP named `name` and positioned at `bp` within the lemma form."""
-    self.bps[name] = bp
+    bp.host = self
+    bp.name = name
+    self.lemma_bps[name] = bp
+  
+  def bp(self, name):
+    """Return the BP `name`, in sentence coordinates with transformation applied."""
+    return self.lemma_bps[name].rotate(self.angle).translate(self.x, self.y)
   
   def svg(self, drawBPs = False):
     """Return a rendered SVG, with the correct coordinate transform.
@@ -49,7 +88,7 @@ class Glyph:
     if drawBPs:
       # Again create a document, urgh.
       document = minidom.getDOMImplementation().createDocument("http://www.w3.org/2000/svg", "svg", None)
-      for bp in self.bps.values():
+      for bp in self.lemma_bps.values():
         dot = document.createElement("circle")
         dot.setAttribute("cx", str(bp.x))
         dot.setAttribute("cy", str(bp.y))
@@ -57,8 +96,8 @@ class Glyph:
         dot.setAttribute("fill", "#6aa84f")
         surface_svg.appendChild(dot)
         # The end of a stubby line for the handle. Again the length 1/3 is magic.
-        endx = bp.x + math.cos(bp.angle)/3
-        endy = bp.y + math.sin(bp.angle)/3
+        endx = (2*bp.x + bp.handlex)/3
+        endy = (2*bp.y + bp.handley)/3
         stub = document.createElement("line")
         stub.setAttribute("x1", str(bp.x))
         stub.setAttribute("y1", str(bp.y))

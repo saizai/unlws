@@ -4,6 +4,7 @@ document.body.append("Before importing... ")
 from canvas import HTMLDOMCanvas
 from emicText import EmicText
 from glyphDictionary import SingleSVGGlyphDictionary
+from relLine import RelLine
 
 board = document.querySelector("#svgboard")
 canvas = HTMLDOMCanvas(board)
@@ -22,6 +23,8 @@ cat.x = 2.
 cat.y = 0.
 cat.angle = math.pi
 text.add_glyph(cat)
+
+text.add_rel(RelLine(firstsg.bp("X"), cat.bp("X")))
 
 canvas.render(text)
 
