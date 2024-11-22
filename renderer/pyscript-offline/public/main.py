@@ -8,7 +8,7 @@ from relLine import RelLine
 
 board = document.querySelector("#svgboard")
 canvas = HTMLDOMCanvas(board)
-text = EmicText() # currently has test logic in it
+text = EmicText()
 
 dictionary = SingleSVGGlyphDictionary('unlws_glyphs/glyphs.svg')
 
@@ -24,7 +24,7 @@ cat.y = 0.
 cat.angle = math.pi
 text.add_glyph(cat)
 
-text.add_rel(RelLine(firstsg.bp("X"), cat.bp("X")))
+text.add_rel(RelLine(firstsg.bp("X"), cat.bp("X"), text.default_stroke_width))
 
 canvas.render(text)
 

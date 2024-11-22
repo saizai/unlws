@@ -1,7 +1,8 @@
 {
   "interpreter": "./pyodide/pyodide.mjs",
-  "packages": ["micropip"],
+  "packages": ["micropip", "svgpathtools"],
   "files": {
+    "./bindingPoint.py": "",
     "./canvas.py": "",
     "./emicText.py": "",
     "./glyph.py": "",
