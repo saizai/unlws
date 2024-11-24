@@ -18,7 +18,11 @@ class SingleSVGGlyphDictionary(GlyphDictionary):
     self.dictionary = minidom.parse(filename)
     # There might be other g elements, but this should include all glyphs:
     self.glyphs = self.dictionary.getElementsByTagName("g")
+    
     self._style = self.dictionary.getElementsByTagName("style")[0]
+    settings = self.dictionary.getElementsByTagName("unlws-renderer:settings")[0]
+    # default SVG class for UNLWS text, to be used with the style
+    self.text_class = settings.getAttribute("text-class")
   
   # FIXME: Style should be stored somewhere better than the dictionary.
   # (Although since SVG expects paths to be filled by default,

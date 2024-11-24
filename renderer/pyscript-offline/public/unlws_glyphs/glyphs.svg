@@ -4,8 +4,9 @@
   width="64px"
   viewBox="-1 -1.75 2 1.75">
  <style>
-  path {fill: none; stroke: #153360; stroke-width: 0.08333333333333;}
+  .unlws {fill: none; stroke: #153360; stroke-width: 0.08333333333333;}
  </style>
+ <unlws-renderer:settings text-class="unlws" />
  <defs>
   <g id="I">
    <path d="M0 1L0-1L-1 0L0.5 0"></path>
