@@ -52,18 +52,24 @@ class SingleSVGGlyphDictionary(GlyphDictionary):
         # at that point. This is what snap_to_end does.
         x = float(child.getAttribute("x"))
         y = float(child.getAttribute("y"))
+        speed = float(child.getAttribute("speed")) if "speed" in child.attributes else 1.
         if "angle" in child.attributes:
           angle = float(child.getAttribute("angle"))/180*math.pi
           handlex = handley = None
         else:
           x, y, handlex, handley = snap_to_end(path_list, x, y)
+          # In case the path (x, y) is on is a line, snap_to_end gives it a
+          # unit normal. Setting the speed attribute adjusts this length.
+          handlex = x + speed*(handlex - x)
+          handley = y + speed*(handley - y)
           angle = None
         bp = BindingPoint(
                           x = x,
                           y = y,
                           handlex = handlex,
                           handley = handley,
-                          angle = angle
+                          angle = angle,
+                          speed = speed
                           )
         glyph.addBP(child.getAttribute("name"), bp)
         g_elt.removeChild(child)
