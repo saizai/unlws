@@ -23,7 +23,7 @@ class RelLine:
     path.setAttribute("stroke-width", str(self.stroke_width))
     return path
   
-  def boundingBox(self):
+  def bounding_box(self):
     """Returns the bounding box for this rel line, as a 4-tuple
     (xmin, xmax, ymin, ymax)."""
     sbox = svgpathtools.CubicBezier(

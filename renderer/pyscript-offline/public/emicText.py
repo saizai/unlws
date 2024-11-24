@@ -46,7 +46,7 @@ class EmicText:
       svg.documentElement.appendChild(el)
     for rel in self.rels:
       ## test: show bounding box
-      #bbox = rel.boundingBox()
+      #bbox = rel.bounding_box()
       #r = svg.createElement("rect")
       #r.setAttribute("x", str(bbox[0]))
       #r.setAttribute("width", str(bbox[1]-bbox[0]))
