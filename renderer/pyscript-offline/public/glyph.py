@@ -64,6 +64,7 @@ class Glyph:
         dot.setAttribute("cy", str(bp.y))
         dot.setAttribute("r", str(1./6)) # magic width based on default stroke width
         dot.setAttribute("fill", "#6aa84f")
+        dot.setAttribute("stroke", "none")
         surface_svg.appendChild(dot)
         # The end of a stubby line for the handle. Again the length 1/3 is magic.
         endx = (2*bp.x + bp.handlex)/3
@@ -132,3 +133,35 @@ class Glyph:
             sbox[2]-stroke_width_allowance,
             sbox[3]+stroke_width_allowance,
             )
+
+def snap_to_end(path_list, x, y, eps = 1e-3):
+  """If (x, y) is near either end of a path in path_list, return the endpoint
+  and an outgoing handle end, as a 4-tuple (end x, end y, handle x, handle y).
+  The outgoing handle end goes in the opposite direction, to allow for nicely
+  extending a stroke.
+  
+  If no matches, return (x, y, None, None).
+  
+  If the end segment of the path is a cubic spline, match the length of the
+  handle. If it's a line, normalise the length of the handle.
+  
+  Arguments:
+  path_list: the list of svgpathtools paths
+  (x, y): the point to look for
+  eps: tolerance (in the 2-norm)"""
+  z = x+y*(0+1j)
+  for path in path_list:
+    if abs(path.start - z) <= eps:
+      derivative = -path[0].derivative(0)/3 # /3 because cubic
+      if isinstance(path[0], svgpathtools.Line):
+        derivative /= abs(derivative) # normalise
+      handlez = path.start + derivative
+      return path.start.real, path.start.imag, handlez.real, handlez.imag
+    if abs(path.end - z) <= eps:
+      derivative = path[-1].derivative(1)/3 # /3 because cubic
+      if isinstance(path[-1], svgpathtools.Line):
+        derivative /= abs(derivative) # normalise
+      handlez = path.end + derivative
+      return path.end.real, path.end.imag, handlez.real, handlez.imag
+  
+  return x, y, None, None

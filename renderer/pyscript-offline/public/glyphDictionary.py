@@ -1,7 +1,8 @@
 from copy import deepcopy
 import math
 import xml.dom.minidom as minidom
-from glyph import BindingPoint, Glyph
+import svgpathtools
+from glyph import BindingPoint, Glyph, snap_to_end
 
 class GlyphDictionary:
   """An abstract class to retrieve glyphs from storage."""
@@ -40,13 +41,29 @@ class SingleSVGGlyphDictionary(GlyphDictionary):
     g_elt.removeAttribute("id")
     glyph = Glyph(g_elt)
     
+    path_list = glyph.svgpathtools_paths()
+    
     # Unpack the properties in the unlws-renderer namespace.
     for child in g_elt.childNodes:
       if child.nodeType == child.ELEMENT_NODE and child.tagName == "unlws-renderer:bp":
+        # Normally a line from a BP continues in the direction of a stroke
+        # within the glyph. So if no angle is specified, try to infer it
+        # by using the derivative (aka spline handle) of a stroke in the glyph
+        # at that point. This is what snap_to_end does.
+        x = float(child.getAttribute("x"))
+        y = float(child.getAttribute("y"))
+        if "angle" in child.attributes:
+          angle = float(child.getAttribute("angle"))/180*math.pi
+          handlex = handley = None
+        else:
+          x, y, handlex, handley = snap_to_end(path_list, x, y)
+          angle = None
         bp = BindingPoint(
-                          x = float(child.getAttribute("x")),
-                          y = float(child.getAttribute("y")),
-                          angle = float(child.getAttribute("angle"))/180*math.pi
+                          x = x,
+                          y = y,
+                          handlex = handlex,
+                          handley = handley,
+                          angle = angle
                           )
         glyph.addBP(child.getAttribute("name"), bp)
         g_elt.removeChild(child)
