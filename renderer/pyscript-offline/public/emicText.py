@@ -30,23 +30,50 @@ class EmicText:
     span = re.search('stroke-width\\s*:\\s*([-+0-9.eE]*)', css).span(1)
     return float(css[span[0]:span[1]])
   
+  def bounding_box(self):
+    """Return the bounding box of this sentence, as a 4-tuple
+    (xmin, xmax, ymin, ymax)."""
+    bboxes = [glyph.bounding_box(stroke_width_allowance=self.default_stroke_width)
+        for glyph in self.glyphs] +\
+      [rel.bounding_box(stroke_width_allowance=self.default_stroke_width)
+        for rel in self.rels]
+    return (
+            min(b[0] for b in bboxes),
+            max(b[1] for b in bboxes),
+            min(b[2] for b in bboxes),
+            max(b[3] for b in bboxes),
+            )
+  
   def svg(self):
     """Return an SVG of this sentence as XML."""
     svg = minidom.getDOMImplementation().createDocument("http://www.w3.org/2000/svg", "svg", None)
     svg.documentElement.setAttribute("xmlns", "http://www.w3.org/2000/svg")
     svg.documentElement.setAttribute("xmlns:unlws-renderer", "https://github.com/saizai/unlws")
-    svg.documentElement.setAttribute("width", "192px")
-    svg.documentElement.setAttribute("viewBox", "-3 -2 6 4")
-    
+    bbox = self.bounding_box()
+    svg.documentElement.setAttribute("viewBox", f"{bbox[0]} {bbox[2]} {bbox[1]-bbox[0]} {bbox[3]-bbox[2]}")
+    # for now, magic scaling of 32px per UNLWS em
+    svg.documentElement.setAttribute("width", str(int(32*(bbox[1]-bbox[0])))+"px")
+
     svg.documentElement.appendChild(self.style)
     
     for glyph in self.glyphs:
+      ## test: show bounding box
+      #bbox = glyph.bounding_box(stroke_width_allowance=self.default_stroke_width)
+      #r = svg.createElement("rect")
+      #r.setAttribute("x", str(bbox[0]))
+      #r.setAttribute("width", str(bbox[1]-bbox[0]))
+      #r.setAttribute("y", str(bbox[2]))
+      #r.setAttribute("height", str(bbox[3]-bbox[2]))
+      #r.setAttribute("fill", "none")
+      #r.setAttribute("stroke", "green")
+      #r.setAttribute("stroke-width", str(1./36))
+      #svg.documentElement.appendChild(r)
       el = glyph.svg()
       el.setAttribute("class", self.text_class)
       svg.documentElement.appendChild(el)
     for rel in self.rels:
       ## test: show bounding box
-      #bbox = rel.bounding_box()
+      #bbox = rel.bounding_box(stroke_width_allowance=self.default_stroke_width)
       #r = svg.createElement("rect")
       #r.setAttribute("x", str(bbox[0]))
       #r.setAttribute("width", str(bbox[1]-bbox[0]))

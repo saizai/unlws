@@ -24,17 +24,6 @@ cat.y = 0.
 cat.angle = math.pi
 text.add_glyph(cat)
 
-text.add_rel(RelLine(firstsg.bp("X"), cat.bp("X"), text.default_stroke_width))
+text.add_rel(RelLine(firstsg.bp("X"), cat.bp("X")))
 
 canvas.render(text)
-
-#e = document.createElementNS("http://www.w3.org/2000/svg", "use")
-#e.setAttribute("href", "#firstsg")
-#e.setAttribute("transform", "translate(-2 0) rotate(-90)")
-#board.appendChild(e)
-#f = document.createElementNS("http://www.w3.org/2000/svg", "circle")
-#f.setAttribute("cx", "0")
-#f.setAttribute("cy", "0")
-#f.setAttribute("r", "1")
-#f.setAttribute("fill", "red")
-#board.appendChild(f)

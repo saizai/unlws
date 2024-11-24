@@ -1,6 +1,7 @@
 from copy import deepcopy
 import math
 import xml.dom.minidom as minidom
+import svgpathtools
 from bindingPoint import BindingPoint
 
 class Glyph:
@@ -27,6 +28,16 @@ class Glyph:
     # Stored in the coordinates of the lemma form, rather than as transformed.
     self.lemma_bps = {}
   
+  @property
+  def angle_in_degrees(self):
+    "Rotation of this glyph in degrees."
+    return self.angle*180./math.pi
+  
+  @property
+  def z(self):
+    "Translation of this glyph as a complex number."
+    return self.x+self.y*(0+1j)
+  
   def addBP(self, name, bp):
     """Add a BP named `name` and positioned at `bp` within the lemma form."""
     bp.host = self
@@ -42,7 +53,7 @@ class Glyph:
     
     If `drawBPs` is true, draw the BPs as green circles."""
     surface_svg = deepcopy(self.lemma_svg)
-    surface_svg.setAttribute("transform", f"translate({self.x} {self.y}) rotate({self.angle*180./math.pi})")
+    surface_svg.setAttribute("transform", f"translate({self.x} {self.y}) rotate({self.angle_in_degrees})")
     
     if drawBPs:
       # Again create a document, urgh.
@@ -67,3 +78,57 @@ class Glyph:
         surface_svg.appendChild(stub)
     
     return surface_svg
+  
+  def svgpathtools_paths(self):
+    """Return a list of svgpathtools Path objects represented by this glyph.
+    
+    The Path objects returned are in global svg coordinates."""
+    # Code patterned on the svg2paths function in svgpathtools.
+    # That has a file read baked in which means we can't use it directly.
+    # TODO: we may want to keep the attributes.
+    def dom2dict(element):
+        """Converts DOM elements to dictionaries of attributes."""
+        keys = list(element.attributes.keys())
+        values = [val.value for val in list(element.attributes.values())]
+        return dict(list(zip(keys, values)))
+    
+    d_strings = [el.getAttribute('d')
+        for el in self.lemma_svg.getElementsByTagName('path')]
+    d_strings += [svgpathtools.polyline2pathd(dom2dict(el))
+        for el in self.lemma_svg.getElementsByTagName('polyline')]
+    d_strings += [svgpathtools.polygon2pathd(dom2dict(el))
+        for el in self.lemma_svg.getElementsByTagName('polygon')]
+    d_strings += [('M' + l.getAttribute('x1') + ' ' + l.getAttribute('y1') +
+                   'L' + l.getAttribute('x2') + ' ' + l.getAttribute('y2'))
+        for el in self.lemma_svg.getElementsByTagName('line')]
+    d_strings += [svgpathtools.ellipse2pathd(dom2dict(el))
+        for el in self.lemma_svg.getElementsByTagName('ellipse')]
+    d_strings += [svgpathtools.ellipse2pathd(dom2dict(el))
+        for el in self.lemma_svg.getElementsByTagName('circle')]
+    d_strings += [svgpathtools.rect2pathd(dom2dict(el))
+        for el in self.lemma_svg.getElementsByTagName('rect')]
+    
+    path_list = [svgpathtools.parse_path(d) for d in d_strings]
+    return [p.rotated(self.angle_in_degrees, origin=0+0j).translated(self.z)
+        for p in path_list]
+  
+  def bounding_box(self, stroke_width_allowance = 0.):
+    """Return the bounding box for this glyph, as a 4-tuple
+    (xmin, xmax, ymin, ymax).
+    
+    Arguments:
+    stroke_width_allowance: pad the bounding box by this much on each side,
+      to allow for stroke width"""
+    path_bboxes = [p.bbox() for p in self.svgpathtools_paths()]
+    sbox = (
+            min(b[0] for b in path_bboxes),
+            max(b[1] for b in path_bboxes),
+            min(b[2] for b in path_bboxes),
+            max(b[3] for b in path_bboxes),
+            )
+    return (
+            sbox[0]-stroke_width_allowance,
+            sbox[1]+stroke_width_allowance,
+            sbox[2]-stroke_width_allowance,
+            sbox[3]+stroke_width_allowance,
+            )
