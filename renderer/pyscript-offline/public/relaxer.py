@@ -2,6 +2,7 @@ import numpy, svgpathtools
 from bindingPoint import BindingPoint
 from glyph import Glyph
 from relLine import RelLine
+from js import console
 
 # Apparatus for computing derivatives for gradient descent.
 
@@ -87,6 +88,32 @@ class DifferentialGlyph(Glyph):
     diff_p.handledy = self.dy + self.dangle * q.handlex
     return diff_p
 
+
+def relax_property_step(object, property_name, section, step_size):
+  """Try increasing and decreasing object.property_name by step_size and see which gives a smaller total penalty."""
+  initial_angle = getattr(object, property_name)
+
+  setattr(object, property_name, initial_angle + step_size)
+  penalty1 = total_penalty(section)
+
+  setattr(object, property_name, initial_angle - step_size)
+  penalty2 = total_penalty(section)
+
+  if penalty1 < penalty2:
+    setattr(object, property_name, initial_angle + step_size)
+
+def relax_step(section, step_size):
+  for glyph in section.glyphs:
+    relax_property_step(glyph, "angle", section, step_size = step_size)
+    relax_property_step(glyph, "x", section, step_size = step_size)
+    relax_property_step(glyph, "y", section, step_size = step_size)
+
+def relax(section, step_count = 100, first_step_size = 0.1):
+  for i in range(step_count):
+    step_size = first_step_size * 0.95**i
+    relax_step(section, step_size = step_size)
+
+
 def dpoly(rel):
   """Return the numpy.poly1d of the first-order derivative 
   in the gradient-descent variable of the parametrised curve."""
@@ -95,6 +122,21 @@ def dpoly(rel):
 
 # The particular penalties below are not necessarily the ones we'll want to
 # go with in the end.
+
+def total_penalty(section, velocity_coef = 1, distance_coef = 10):
+  penalty = 0
+  for rel in section.rels:
+    penalty += velocity_penalty(rel) * velocity_coef
+  
+  for glyph1 in section.glyphs:
+    for glyph2 in section.glyphs:
+      if glyph1 is glyph2:
+        continue
+      center_distance_squared = (glyph1.x-glyph2.x)**2 + (glyph1.y-glyph2.y)**2
+      penalty += distance_coef / (1+center_distance_squared)
+    
+  return penalty
+
 
 def velocity_penalty(rel):
   "Penalty score for this rel not going at constant velocity."
