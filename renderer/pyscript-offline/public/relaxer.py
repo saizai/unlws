@@ -2,6 +2,7 @@ import numpy, svgpathtools
 from bindingPoint import BindingPoint
 from glyph import Glyph
 from relLine import RelLine
+from js import console
 
 # Apparatus for computing derivatives for gradient descent.
 
@@ -87,6 +88,33 @@ class DifferentialGlyph(Glyph):
     diff_p.handledy = self.dy + self.dangle * q.handlex
     return diff_p
 
+
+# def relax_property_step(object, property_name, step_size):
+  # """Try increasing and decreasing object.property_name by step_size and see which gives a smaller total penalty"""
+  # TODO
+
+def relax_glyph_rotation_step(glyph, section, step_size):
+  initial_angle = glyph.angle
+
+  glyph.angle = initial_angle + step_size
+  penalty1 = total_penalty(section)
+
+  glyph.angle = initial_angle - step_size
+  penalty2 = total_penalty(section)
+
+  if penalty1 < penalty2:
+    glyph.angle = initial_angle + step_size
+
+def relax_step(section, step_size):
+  for glyph in section.glyphs:
+    relax_glyph_rotation_step(glyph, section, step_size = step_size)
+
+def relax(section, step_count = 100, first_step_size = 0.1):
+  for i in range(step_count):
+    step_size = first_step_size * 0.95**i
+    relax_step(section, step_size = step_size)
+
+
 def dpoly(rel):
   """Return the numpy.poly1d of the first-order derivative 
   in the gradient-descent variable of the parametrised curve."""
@@ -95,6 +123,13 @@ def dpoly(rel):
 
 # The particular penalties below are not necessarily the ones we'll want to
 # go with in the end.
+
+def total_penalty(text):
+  penalty = 0
+  for rel in text.rels:
+    penalty += velocity_penalty(rel)
+  return penalty
+
 
 def velocity_penalty(rel):
   "Penalty score for this rel not going at constant velocity."
