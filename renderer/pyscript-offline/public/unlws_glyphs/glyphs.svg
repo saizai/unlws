@@ -17,5 +17,12 @@
    <path d="M-1-1.125L-0.875-1.75L-0.5-1.375C0.333333-2 0.75-1.25 0.166667-0.625"></path>
    <unlws-renderer:bp name="X" x="1" y="0"/>
   </g>
+  <g id="communicate">
+   <path d="M-0.5 0.5L-0.5 -1L1 0.5Z"></path>
+   <unlws-renderer:bp name="X" x="1" y="0.5" angle="0"/>
+   <unlws-renderer:bp name="Y" x="-0.5" y="0.5" angle="180"/>
+   <unlws-renderer:bp name="C" x="0.25" y="-0.25" angle="-45"/>
+   <unlws-renderer:bp name="S" x="-0.5" y="-1" angle="-90"/>
+  </g>
  </defs>
 </svg>
