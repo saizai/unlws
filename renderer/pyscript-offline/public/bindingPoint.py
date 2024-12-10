@@ -40,7 +40,7 @@ class BindingPoint:
     return self.handlex+self.handley*(0+1j)
   
   def translate(self, dx, dy):
-    """Return a cooy of this BP translated by (dx, dy)."""
+    """Return a copy of this BP translated by (dx, dy)."""
     p = copy(self)
     p.x += dx
     p.y += dy
@@ -49,7 +49,7 @@ class BindingPoint:
     return p
   
   def rotate(self, dangle):
-    """Return a cooy of this BP rotated around the origin by dangle."""
+    """Return a copy of this BP rotated around the origin by dangle."""
     c, s = math.cos(dangle), math.sin(dangle)
     p = copy(self)
     p.x = c*self.x - s*self.y
