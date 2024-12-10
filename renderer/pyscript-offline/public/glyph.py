@@ -39,7 +39,7 @@ class Glyph:
     return self.x+self.y*(0+1j)
   
   def addBP(self, name, bp):
-    """Add a BP named `name` and positioned at `bp` within the lemma form."""
+    """Add `bp` with the name `name`."""
     bp.host = self
     bp.name = name
     self.lemma_bps[name] = bp
