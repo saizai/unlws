@@ -126,20 +126,20 @@ def dpoly(rel):
 
 def total_penalty(section, velocity_coef = 1, distance_coef = 10):
   """Penalty score for the whole section."""
-  velocity_penalty = 0
+  velocity_partial_penalty = 0
   for rel in section.rels:
-    velocity_penalty += velocity_penalty(rel)
+    velocity_partial_penalty += velocity_penalty(rel)
   
-  distance_penalty = 0
+  distance_partial_penalty = 0
   for glyph1 in section.glyphs:
     for glyph2 in section.glyphs:
       if glyph1 is glyph2:
         continue
       center_distance_squared = (glyph1.x-glyph2.x)**2 + (glyph1.y-glyph2.y)**2
-      distance_penalty += 1 / (1+center_distance_squared)
+      distance_partial_penalty += 1 / (1+center_distance_squared)
 
-  penalty = velocity_penalty*velocity_coef +\
-    distance_penalty*distance_coef
+  penalty = velocity_partial_penalty*velocity_coef +\
+    distance_partial_penalty*distance_coef
   return penalty
 
 
