@@ -16,4 +16,4 @@ class HTMLDOMCanvas(Canvas):
     pass
   
   def render(self, emictext):
-    self.element.innerHTML += emictext.svg().toxml()
+    self.element.innerHTML = emictext.svg().toxml()
