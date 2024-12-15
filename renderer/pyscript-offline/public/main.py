@@ -56,14 +56,26 @@ def render_with_comments(text, description):
 
     p = document.createElement("p")
     p.innerHTML += f"{description}:<br>"
-    p.innerHTML += f"Non-constant-velocity penalty for the top rel: {str(relaxer.velocity_penalty(text.rels[0]))}.<br>"
-    p.innerHTML += f"Derivative: {str(relaxer.deriv_velocity_penalty(text.rels[0]))}.<br>"
-    p.innerHTML += f"Curvature penalty for the top rel: {str(relaxer.curvature_penalty(text.rels[0]))}.<br>"
+    # p.innerHTML += f"Non-constant-velocity penalty: {str(relaxer.total_penalty(text, {"velocity": 1, "curvature": 0, "distance": 0}))}.<br>"
+    # p.innerHTML += f"Derivative for top rel: {str(relaxer.deriv_velocity_penalty(text.rels[0]))}.<br>"
+    p.innerHTML += f"Curvature penalty: {str(relaxer.total_penalty(text, {"velocity": 0, "curvature": 1, "distance": 0}))}.<br>"
+    p.innerHTML += f"Curvature squared penalty: {str(relaxer.total_penalty(text, {"velocity": 0, "curvature": 0, "distance": 0, "curvature_squared": 1}))}.<br>"
+    p.innerHTML += f"Curvature penalty for top rel: {str(relaxer.curvature_penalty(text.rels[0]))}.<br>"
+    p.innerHTML += f"Curvature penalty for bottom rel: {str(relaxer.curvature_penalty(text.rels[1]))}.<br>"
 
     board.append(p)
 
 text = make_test_text(math.pi/6)
 render_with_comments(text, "Initial")
 
-relaxer.relax(text)
-render_with_comments(text, "Relaxed")
+velocity_relaxed_text = make_test_text(math.pi/6)
+relaxer.relax(velocity_relaxed_text, penalty_coefficients={"velocity": 1, "curvature": 0})
+render_with_comments(velocity_relaxed_text, "Relaxed velocity")
+
+curvature_relaxed_text = make_test_text(math.pi/6)
+relaxer.relax(curvature_relaxed_text, penalty_coefficients={"velocity": 0, "curvature": 5})
+render_with_comments(curvature_relaxed_text, "Relaxed max curvature")
+
+curvature_squared_relaxed_text = make_test_text(math.pi/6)
+relaxer.relax(curvature_squared_relaxed_text, penalty_coefficients={"velocity": 0, "curvature": 0, "curvature_squared": 20})
+render_with_comments(curvature_squared_relaxed_text, "Relaxed squares of max curvature")
