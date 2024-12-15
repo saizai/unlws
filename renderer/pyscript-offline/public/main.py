@@ -10,7 +10,7 @@ board = document.querySelector("#svgboard")
 
 dictionary = SingleSVGGlyphDictionary('unlws_glyphs/glyphs.svg')
 
-def make_test_text(I_angle_offset = 0, distance_multiplier = 1, relax = False):
+def make_test_text(I_angle_offset = 0, distance_multiplier = 1):
     text = EmicText()
 
     firstsg = dictionary.glyph_by_id("I")
