@@ -5,14 +5,7 @@ A tool to specify UNLWS texts in code and display them.
 
 1. Clone the repo
 2. Open a terminal in `...\unlws\renderer\pyscript-offline\public`
-3. Start a local web server. If you have Python installed, this can be done by running
-    ```sh
-    python3 -m http.server
-    ```
-    or
-    ```sh
-    python -m http.server
-    ```
+3. Start a local web server. If you have Python installed, this can be done by running the shell script `run_local_server.sh`
 4. Go to `http://localhost:8000` in your browser
 
 Each time the site is loaded, it will download a WebAssembly-based Python runtime (via PyScript), so expect to wait a while.
