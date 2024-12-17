@@ -16,7 +16,7 @@ firstsg = dictionary.glyph_by_id("I")
 firstsg = relaxer.DifferentialGlyph.from_glyph(firstsg)
 firstsg.x = -2.
 firstsg.y = 0.
-firstsg.angle = -math.pi/2#math.pi/6#-math.pi/2
+firstsg.angle = math.pi/6#-math.pi/2
 text.add_glyph(firstsg)
 
 cat = dictionary.glyph_by_id("cat")
@@ -31,6 +31,6 @@ text.add_rel(rel)
 
 canvas.render(text)
 
-document.body.append(f"Non-constant-velocity penalty: {str(relaxer.velocity_penalty(rel))}. ")
-cat.dx = 1.
-document.body.append(f"Derivative: {str(relaxer.deriv_velocity_penalty(rel))}. ")
+document.body.append(f"Max curvature: {str(relaxer.curvature_penalty(rel))}. ")
+firstsg.dangle = 1.
+document.body.append(f"Derivative: {str(relaxer.deriv_curvature_penalty(rel))}. ")
