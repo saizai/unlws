@@ -3,7 +3,9 @@
   "packages": ["micropip", "svgpathtools"],
   "files": {
     "./bindingPoint.py": "",
+    "./BPHaver.py": "",
     "./canvas.py": "",
+    "./emicSection.py": "",
     "./emicText.py": "",
     "./glyph.py": "",
     "./glyphDictionary.py": "",

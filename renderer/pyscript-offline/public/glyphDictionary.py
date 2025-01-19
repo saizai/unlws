@@ -2,7 +2,9 @@ from copy import deepcopy
 import math
 import xml.dom.minidom as minidom
 import svgpathtools
-from glyph import BindingPoint, Glyph, snap_to_end
+from bindingPoint import BindingPoint
+from glyph import Glyph, snap_to_end
+from emicSection import EmicSection
 
 class GlyphDictionary:
   """An abstract class to retrieve glyphs from storage."""
@@ -39,7 +41,7 @@ class SingleSVGGlyphDictionary(GlyphDictionary):
     Strip the dictionary apparatus."""
     g_elt = deepcopy([g for g in self.glyphs if g.getAttribute("id") == id][0])
     g_elt.removeAttribute("id")
-    glyph = Glyph(g_elt)
+    glyph = EmicSection.from_glyph(Glyph(g_elt))
     
     path_list = glyph.svgpathtools_paths()
     

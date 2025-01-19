@@ -5,23 +5,23 @@ class RelLine:
   """A rel line, connecting two BPs in an UNLWS sentence.
   
   The BPs are accessed 'by reference' using argument names, so that 
-  changes to the glyphs propagate."""
-  def __init__(self, glyph0, arg0, glyph1, arg1):
-    "Create a rel between the BP of glyph0 named arg0 and that of glyph1 named arg1."
-    self.glyph0 = glyph0
+  changes to the sections propagate."""
+  def __init__(self, section0, arg0, section1, arg1):
+    "Create a rel between the BP of section0 named arg0 and that of section1 named arg1."
+    self.section0 = section0
     self.arg0 = arg0
-    self.glyph1 = glyph1
+    self.section1 = section1
     self.arg1 = arg1
   
   @property
   def bp0(self):
     "The BP at the start of this rel line."
-    return self.glyph0.bp(self.arg0)
+    return self.section0.bp(self.arg0)
   
   @property
   def bp1(self):
     "The BP at the end of this rel line."
-    return self.glyph1.bp(self.arg1)
+    return self.section1.bp(self.arg1)
   
   def svg(self):
     # do I really need to create documents all the time?

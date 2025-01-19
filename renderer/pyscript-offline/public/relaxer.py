@@ -1,7 +1,7 @@
 import numpy, svgpathtools
 from bindingPoint import BindingPoint
-from glyph import Glyph
 from relLine import RelLine
+from emicSection import EmicSection
 
 # Apparatus for computing derivatives for gradient descent.
 
@@ -45,35 +45,46 @@ class DifferentialBindingPoint(BindingPoint):
     diff_p.handledy = s*self.handledx + c*self.handledy
     return diff_p
 
-class DifferentialGlyph(Glyph):
-  "An instance of a glyph with derivatives of position and rotation."
+class DifferentialSection(EmicSection):
+  "An instance of a section with derivatives of position and rotation."
 
-  def __init__(self, lemma_svg = None):
-    """Initialise this glyph."""
-    super().__init__(lemma_svg)
+  def __init__(self):
+    """Initialise this section."""
+    super().__init__()
     # Derivatives of our position and angle statistics.
     self.dx = 0.
     self.dy = 0.
     self.dangle = 0.
   
   @classmethod
-  def from_glyph(self, g):
-    "Return glyph g upgraded to a DifferentialGlyph."
-    dg = DifferentialGlyph(g.lemma_svg)
-    dg.x = g.x
-    dg.y = g.y
-    dg.angle = g.angle
-    dg.lemma_bps = g.lemma_bps
-    return dg
+  def from_emic_section(self, s):
+    "Return EmicSection s upgraded to a DifferentialSection."
+    ds = DifferentialSection()
+    ds.x = s.x
+    ds.y = s.y
+    ds.angle = s.angle
+    ds.copy_BPs_from(s)
+    subsec_dict = {} # Hashes from the given section's subsections to corresponding differential sections.
+    for subsec in s.subsections:
+      dsubsec = DifferentialSection.from_emic_section(subsec)
+      subsec_dict[subsec] = dsubsec
+      ds.add_subsection(dsubsec)
+    for rel in s.rels:
+      ds.add_rel(RelLine(subsec_dict[rel.section0], rel.arg0, subsec_dict[rel.section1], rel.arg1))
+    return ds
   
+  def add_subsection(self, subsec):
+    diffsubsec = DifferentialSection.from_emic_section(subsec)
+    return super().add_subsection(diffsubsec)
+
   @property
   def dangle_in_degrees(self):
-    "Differential of rotation of this glyph in degrees."
+    "Differential of rotation of this section in degrees."
     return self.dangle*180./math.pi
   
   @property
   def dz(self):
-    "Differential of translation of this glyph as a complex number."
+    "Differential of translation of this section as a complex number."
     return self.dx+self.dy*(0+1j)
   
   def bp(self, name):
@@ -103,10 +114,10 @@ def relax_property_step(object, property_name, section, step_size, penalty_coeff
 
 def relax_step(section, step_size, penalty_coefficients = {}):
   """Do one step of relaxing all relaxable properties in the section."""
-  for glyph in section.glyphs:
-    relax_property_step(glyph, "angle", section, step_size = step_size, penalty_coefficients = penalty_coefficients)
-    relax_property_step(glyph, "x", section, step_size = step_size, penalty_coefficients = penalty_coefficients)
-    relax_property_step(glyph, "y", section, step_size = step_size, penalty_coefficients = penalty_coefficients)
+  for subsec in section.subsections:
+    relax_property_step(subsec, "angle", section, step_size = step_size, penalty_coefficients = penalty_coefficients)
+    relax_property_step(subsec, "x", section, step_size = step_size, penalty_coefficients = penalty_coefficients)
+    relax_property_step(subsec, "y", section, step_size = step_size, penalty_coefficients = penalty_coefficients)
 
 def relax(section, step_count = 100, first_step_size = 0.1, penalty_coefficients = {}):
   """Relax all relaxable properties in the section."""
@@ -134,7 +145,7 @@ def total_penalty(section, penalty_coefficients = {}):
   * `velocity`: Penalty for rels not going at constant velocity;
   * `curvature`: Maximum unsigned curvature attained at any point of this rel;
   * `curvature_squared`: Square of the above;
-  * `distance`: Penalty for glyph centers being close to each other."""
+  * `distance`: Penalty for section centers being close to each other."""
   penalty = 0
 
   # Combine the default values with the passed values
@@ -160,11 +171,11 @@ def total_penalty(section, penalty_coefficients = {}):
 
   distance_partial_penalty = 0
   if penalty_coefficients["distance"] != 0:
-    for glyph1 in section.glyphs:
-      for glyph2 in section.glyphs:
-        if glyph1 is glyph2:
+    for subsec1 in section.subsections:
+      for subsec2 in section.subsections:
+        if subsec1 is subsec2:
           continue
-        center_distance_squared = (glyph1.x-glyph2.x)**2 + (glyph1.y-glyph2.y)**2
+        center_distance_squared = (subsec1.x-subsec2.x)**2 + (subsec1.y-subsec2.y)**2
         distance_partial_penalty += 1 / (1+center_distance_squared)
   penalty += distance_partial_penalty*penalty_coefficients["distance"]
 
@@ -185,7 +196,7 @@ def velocity_penalty(rel):
 def deriv_velocity_penalty(rel):
   """Derivative of penalty for this rel not going at constant velocity.
   
-  The glyphs which rel is attached to should be DifferentialGlyph objects."""
+  The sections which rel is attached to should be DifferentialSection objects."""
   bezier = rel.svgpathtools_bezier()
   dd = bezier.poly().deriv().deriv()
   ddx = [float(dd[i].real) for i in range(0,2)]
