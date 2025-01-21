@@ -8,8 +8,11 @@ class EmicSection(BPHaver):
   """A section within an UNLWS text, containing subsections and rels between them."""
   # TODO: use this class as a middleman to handle multiple rels connected to the same BP.
 
-  def __init__(self):
-    """Initialise this Section to have a position and rotation."""
+  def __init__(self, name = None):
+    """Initialise this Section to have a position, rotation, name, subsections and rels."""
+    if not name: name = "sec_" + hex(id(object))
+    self.name = name
+
     super().__init__()
 
     self.subsections = [] # subsections in the section
@@ -17,34 +20,15 @@ class EmicSection(BPHaver):
 
     # Position in the supersection, in svg-style coordinates where
     # x increases right and y increases down.
-    self._x = 0.
-    self._y = 0.
+    self.x = 0.
+    self.y = 0.
     # Angle of rotation of the section, in *radians*.  0 is rightward.
     # A positive angle is a clockwise rotation, to match the reflected y.
-    self._angle = 0.
+    self.angle = 0.
   
   @classmethod
-  def from_glyph(self, glyph):
-    return SingleGlyphEmicSection(glyph)
-  
-  @property
-  def x(self):
-    return self._x
-  @x.setter
-  def x(self, value):
-    self._x = value
-  @property
-  def y(self):
-    return self._y
-  @y.setter
-  def y(self, value):
-    self._y = value
-  @property
-  def angle(self):
-    return self._angle
-  @angle.setter
-  def angle(self, value):
-    self._angle = value
+  def from_glyph(self, glyph, name = None):
+    return SingleGlyphEmicSection(glyph, name = name)
 
   @property
   def angle_in_degrees(self):
@@ -107,6 +91,7 @@ class EmicSection(BPHaver):
     stroke_width_allowance: pad the bounding box by this much on each side,
       to allow for stroke width"""
     subsection_bboxes = [p.bounding_box(0.) for p in self.subsections]
+
     sbox = (
             min(b[0] for b in subsection_bboxes),
             max(b[1] for b in subsection_bboxes),
@@ -121,16 +106,9 @@ class EmicSection(BPHaver):
             )
   
   def svg(self):
-    """Return an SVG of this sentence as XML."""
-    svg = minidom.getDOMImplementation().createDocument("http://www.w3.org/2000/svg", "svg", None)
-    svg.documentElement.setAttribute("xmlns", "http://www.w3.org/2000/svg")
-    svg.documentElement.setAttribute("xmlns:unlws-renderer", "https://github.com/saizai/unlws")
-    bbox = self.bounding_box()
-    svg.documentElement.setAttribute("viewBox", f"{bbox[0]} {bbox[2]} {bbox[1]-bbox[0]} {bbox[3]-bbox[2]}")
-    # for now, magic scaling of 32px per UNLWS em
-    svg.documentElement.setAttribute("width", str(int(32*(bbox[1]-bbox[0])))+"px")
-
-    svg.documentElement.appendChild(self.style)
+    """Return this section as an XML <g> element."""
+    document = minidom.getDOMImplementation().createDocument("http://www.w3.org/2000/svg", "svg", None)
+    g = document.createElement("g")
     
     for subsection in self.subsections:
       ## test: show bounding box
@@ -146,7 +124,7 @@ class EmicSection(BPHaver):
       #svg.documentElement.appendChild(r)
       el = subsection.svg()
       el.setAttribute("class", self.text_class)
-      svg.documentElement.appendChild(el)
+      g.appendChild(el)
     for rel in self.rels:
       ## test: show bounding box
       #bbox = rel.bounding_box(stroke_width_allowance=self.default_stroke_width)
@@ -161,15 +139,22 @@ class EmicSection(BPHaver):
       #svg.documentElement.appendChild(r)
       el = rel.svg()
       el.setAttribute("class", self.text_class)
-      svg.documentElement.appendChild(el)
+      g.appendChild(el)
     
-    return svg
+    return g
+
+  def __repr__(self):
+    res = f"{type(self).__name__} \"{self.name}\" ("
+    for subsec in self.subsections:
+      res += subsec.name
+    res += ")"
+    return res
 
 class SingleGlyphEmicSection(EmicSection):
   """An instance of a glyph within a text."""
 
-  def __init__(self, glyph=None):
-    super().__init__()
+  def __init__(self, glyph = None, name = None):
+    super().__init__(name = name)
     self.glyph = glyph
     # self.add_subsection(glyph) # TODO: Do I want this? Probably not, since Glyphs don't work like EmicSections
   

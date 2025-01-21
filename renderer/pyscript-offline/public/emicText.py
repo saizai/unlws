@@ -24,3 +24,22 @@ class EmicText(EmicSection):
     css = self.style.childNodes[0].data
     span = re.search('stroke-width\\s*:\\s*([-+0-9.eE]*)', css).span(1)
     return float(css[span[0]:span[1]])
+
+  def svg(self):
+    """Return an SVG of this section as an XML <g> element."""
+    svg = minidom.getDOMImplementation().createDocument("http://www.w3.org/2000/svg", "svg", None)
+    document = svg.documentElement
+    
+    document.setAttribute("xmlns", "http://www.w3.org/2000/svg")
+    document.setAttribute("xmlns:unlws-renderer", "https://github.com/saizai/unlws")
+    bbox = self.bounding_box()
+    document.setAttribute("viewBox", f"{bbox[0]} {bbox[2]} {bbox[1]-bbox[0]} {bbox[3]-bbox[2]}")
+    # for now, magic scaling of 32px per UNLWS em
+    document.setAttribute("width", str(int(32*(bbox[1]-bbox[0])))+"px")
+
+    document.appendChild(self.style)
+    
+    contents = super().svg()
+    document.appendChild(contents)
+    
+    return svg

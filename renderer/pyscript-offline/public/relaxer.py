@@ -48,9 +48,9 @@ class DifferentialBindingPoint(BindingPoint):
 class DifferentialSection(EmicSection):
   "An instance of a section with derivatives of position and rotation."
 
-  def __init__(self):
+  def __init__(self, name = None):
     """Initialise this section."""
-    super().__init__()
+    super().__init__(name = name)
     # Derivatives of our position and angle statistics.
     self.dx = 0.
     self.dy = 0.
@@ -89,12 +89,16 @@ class DifferentialSection(EmicSection):
 
 # This class exists mainly because there are different kinds of EmicSections (like SingleGlyphEmicSections) and if I want to copy them (using from_emic_section) with all of their overwritten methods, I think I would need to write many different cases, or something that goes through the DifferentialSection's crucial methods and adds them to a copied EmicSection.
 # Instead, this class holds a reference to an EmicSection and reads some properties from it (x, y, angle, lemma_bps)
+# Perhaps inheritance isn't fit for this. Maybe use the Component pattern? (see https://gameprogrammingpatterns.com/component.html)
 class DifferentialSectionFromEmic(DifferentialSection):
-  def __init__(self, emicSection):
+  def __init__(self, emicSection, name = None):
     self.emicSection = emicSection
-
-    super().__init__()
+    assert(not isinstance(self.emicSection, DifferentialSection))
     
+    if not name: name = emicSection.name
+
+    super().__init__(name = name)
+
     subsec_dict = {} # Hashes from the given section's subsections to corresponding differential sections.
     for subsec in emicSection.subsections:
       dsubsec = DifferentialSection.from_emic_section(subsec)
@@ -102,7 +106,7 @@ class DifferentialSectionFromEmic(DifferentialSection):
       self.add_subsection(dsubsec)
     for rel in emicSection.rels:
       self.add_rel(RelLine(subsec_dict[rel.section0], rel.arg0, subsec_dict[rel.section1], rel.arg1))
-  
+      
   @property
   def x(self):
     return self.emicSection.x
@@ -132,6 +136,16 @@ class DifferentialSectionFromEmic(DifferentialSection):
     raise AttributeError("Can't set lemma_bps of DifferentialSectionFromEmic.")
     # assert len(self.emicSection.lemma_bps) == 0, f"Warning: trying to overwrite lemma_bps {self.emicSection.lemma_bps} of {self.emicSection}"
     # self.emicSection.lemma_bps = value
+  
+  def bounding_box(self, stroke_width_allowance=0):
+    return self.emicSection.bounding_box(stroke_width_allowance)
+  
+  @property
+  def style(self):
+    return self.emicSection.style
+  
+  def svg(self):
+    return self.emicSection.svg()
 
   
 

@@ -35,13 +35,14 @@ class SingleSVGGlyphDictionary(GlyphDictionary):
   def style(self):
     return self._style
   
-  def glyph_by_id(self, id):
+  def glyph_by_id(self, id, name = None):
     """Return the dictionary form of the glyph with id `id`.
     
     Strip the dictionary apparatus."""
     g_elt = deepcopy([g for g in self.glyphs if g.getAttribute("id") == id][0])
     g_elt.removeAttribute("id")
-    glyph = EmicSection.from_glyph(Glyph(g_elt))
+    if not name: name = id
+    glyph = EmicSection.from_glyph(Glyph(g_elt), name = name)
     
     path_list = glyph.svgpathtools_paths()
     

@@ -10,7 +10,7 @@ board = document.querySelector("#svgboard")
 
 dictionary = SingleSVGGlyphDictionary('unlws_glyphs/glyphs.svg')
 
-def make_test_text(I_angle_offset = 0, distance_multiplier = 1):
+def make_test_text(I_angle_offset = 0, distance_multiplier = 1, name = "test text"):
     text = EmicText()
 
     firstsg = dictionary.glyph_by_id("I")
@@ -30,7 +30,7 @@ def make_test_text(I_angle_offset = 0, distance_multiplier = 1):
     rel = RelLine(firstsg, "X", cat, "X")
     text.add_rel(rel)
 
-    cat2 = dictionary.glyph_by_id("cat")
+    cat2 = dictionary.glyph_by_id("cat", name = "cat2")
     cat2 = relaxer.DifferentialSection.from_emic_section(cat2)
     cat2.x = 2. * distance_multiplier
     cat2.y = 1.
@@ -65,29 +65,27 @@ def render_with_comments(text, description):
 
     board.append(p)
 
-text = make_test_text(math.pi/6)
+text = make_test_text(math.pi/6, name = "initial")
 # render_with_comments(text, "Initial")
 
-velocity_relaxed_text = make_test_text(math.pi/6)
+velocity_relaxed_text = make_test_text(math.pi/6, name = "velocity relaxed")
 
-print("subsections:")
-for subsec in velocity_relaxed_text.subsections:
-    print(subsec)
-    print(subsec.lemma_bps)
-print("rels:")
-for rel in velocity_relaxed_text.rels:
-    print(rel)
-    print(f"{rel.section0}.{rel.arg0} rel {rel.section1}.{rel.arg1}")
-
+# print("subsections:")
+# for subsec in velocity_relaxed_text.subsections:
+#     print(subsec)
+#     print(subsec.lemma_bps)
+# print("rels:")
+# for rel in velocity_relaxed_text.rels:
+#     print(rel)
 
 relaxer.relax(velocity_relaxed_text, penalty_coefficients={"velocity": 1, "curvature": 0})
-# render_with_comments(velocity_relaxed_text, "Relaxed velocity")
+render_with_comments(velocity_relaxed_text, "Relaxed velocity")
 
 # curvature_relaxed_text = make_test_text(math.pi/6)
 # relaxer.relax(curvature_relaxed_text, penalty_coefficients={"velocity": 0, "curvature": 5})
 # render_with_comments(curvature_relaxed_text, "Relaxed max curvature")
 
-curvature_squared_relaxed_text = make_test_text(math.pi/6)
+curvature_squared_relaxed_text = make_test_text(math.pi/6, name = "curvature² relaxed")
 relaxer.relax(curvature_squared_relaxed_text, penalty_coefficients={"velocity": 0, "curvature": 0, "curvature_squared": 20})
 # render_with_comments(curvature_squared_relaxed_text, "Relaxed squares of max curvature")
 
