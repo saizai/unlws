@@ -50,3 +50,6 @@ class RelLine:
             sbox[2]-stroke_width_allowance,
             sbox[3]+stroke_width_allowance,
             )
+  
+  def __repr__(self):
+    return f"({self.arg0} of {self.section0} rel {self.arg1} of {self.section1})"
