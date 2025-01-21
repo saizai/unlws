@@ -17,16 +17,35 @@ class EmicSection(BPHaver):
 
     # Position in the supersection, in svg-style coordinates where
     # x increases right and y increases down.
-    self.x = 0.
-    self.y = 0.
+    self._x = 0.
+    self._y = 0.
     # Angle of rotation of the section, in *radians*.  0 is rightward.
     # A positive angle is a clockwise rotation, to match the reflected y.
-    self.angle = 0.
+    self._angle = 0.
   
   @classmethod
   def from_glyph(self, glyph):
     return SingleGlyphEmicSection(glyph)
-    
+  
+  @property
+  def x(self):
+    return self._x
+  @x.setter
+  def x(self, value):
+    self._x = value
+  @property
+  def y(self):
+    return self._y
+  @y.setter
+  def y(self, value):
+    self._y = value
+  @property
+  def angle(self):
+    return self._angle
+  @angle.setter
+  def angle(self, value):
+    self._angle = value
+
   @property
   def angle_in_degrees(self):
     "Rotation of this section in degrees."
@@ -169,7 +188,7 @@ class SingleGlyphEmicSection(EmicSection):
     if drawBPs:
       # Again create a document, urgh.
       document = minidom.getDOMImplementation().createDocument("http://www.w3.org/2000/svg", "svg", None)
-      for bp in self.lemma_bps.values():
+      for bp in self._lemma_bps.values():
         dot = document.createElement("circle")
         dot.setAttribute("cx", str(bp.x))
         dot.setAttribute("cy", str(bp.y))

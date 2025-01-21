@@ -55,22 +55,11 @@ class DifferentialSection(EmicSection):
     self.dx = 0.
     self.dy = 0.
     self.dangle = 0.
-  
+
   @classmethod
   def from_emic_section(self, s):
     "Return EmicSection s upgraded to a DifferentialSection."
-    ds = DifferentialSection()
-    ds.x = s.x
-    ds.y = s.y
-    ds.angle = s.angle
-    ds.copy_BPs_from(s)
-    subsec_dict = {} # Hashes from the given section's subsections to corresponding differential sections.
-    for subsec in s.subsections:
-      dsubsec = DifferentialSection.from_emic_section(subsec)
-      subsec_dict[subsec] = dsubsec
-      ds.add_subsection(dsubsec)
-    for rel in s.rels:
-      ds.add_rel(RelLine(subsec_dict[rel.section0], rel.arg0, subsec_dict[rel.section1], rel.arg1))
+    ds = DifferentialSectionFromEmic(s)
     return ds
   
   def add_subsection(self, subsec):
@@ -97,6 +86,55 @@ class DifferentialSection(EmicSection):
     diff_p.handledx = self.dx - self.dangle * q.handley
     diff_p.handledy = self.dy + self.dangle * q.handlex
     return diff_p
+
+# This class exists mainly because there are different kinds of EmicSections (like SingleGlyphEmicSections) and if I want to copy them (using from_emic_section) with all of their overwritten methods, I think I would need to write many different cases, or something that goes through the DifferentialSection's crucial methods and adds them to a copied EmicSection.
+# Instead, this class holds a reference to an EmicSection and reads some properties from it (x, y, angle, lemma_bps)
+class DifferentialSectionFromEmic(DifferentialSection):
+  def __init__(self, emicSection):
+    self.emicSection = emicSection
+
+    super().__init__()
+    
+    subsec_dict = {} # Hashes from the given section's subsections to corresponding differential sections.
+    for subsec in emicSection.subsections:
+      dsubsec = DifferentialSection.from_emic_section(subsec)
+      subsec_dict[subsec] = dsubsec
+      self.add_subsection(dsubsec)
+    for rel in emicSection.rels:
+      self.add_rel(RelLine(subsec_dict[rel.section0], rel.arg0, subsec_dict[rel.section1], rel.arg1))
+  
+  @property
+  def x(self):
+    return self.emicSection.x
+  @x.setter
+  def x(self, value):
+    # raise AttributeError("Can't set x of DifferentialSectionFromEmic.")
+    self.emicSection.x = value
+  @property
+  def y(self):
+    return self.emicSection.y
+  @y.setter
+  def y(self, value):
+    # raise AttributeError("Can't set y of DifferentialSectionFromEmic.")
+    self.emicSection.y = value
+  @property
+  def angle(self):
+    return self.emicSection.angle
+  @angle.setter
+  def angle(self, value):
+    # raise AttributeError("Can't set angle of DifferentialSectionFromEmic.")
+    self.emicSection.angle = value
+  @property
+  def lemma_bps(self):
+    return self.emicSection.lemma_bps
+  @lemma_bps.setter
+  def lemma_bps(self, value):
+    raise AttributeError("Can't set lemma_bps of DifferentialSectionFromEmic.")
+    # assert len(self.emicSection.lemma_bps) == 0, f"Warning: trying to overwrite lemma_bps {self.emicSection.lemma_bps} of {self.emicSection}"
+    # self.emicSection.lemma_bps = value
+
+  
+
 
 
 def relax_property_step(object, property_name, section, step_size, penalty_coefficients = {}):
