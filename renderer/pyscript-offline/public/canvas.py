@@ -3,8 +3,8 @@ class Canvas:
   
   Do not confuse with the HTML canvas element (which we do not expect to use.)"""
   
-  def render(self, emictext):
-    """Draw the EmicText emictext to this canvas."""
+  def render(self, emicsection):
+    """Draw the EmicSection emicsection to this canvas."""
     raise NotImplementedError
 
 class HTMLDOMCanvas(Canvas):
@@ -15,5 +15,5 @@ class HTMLDOMCanvas(Canvas):
     self.element = element
     pass
   
-  def render(self, emictext):
-    self.element.innerHTML = emictext.svg().toxml()
+  def render(self, emicsection):
+    self.element.innerHTML = emicsection.svg_document().toxml()

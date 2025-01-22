@@ -42,7 +42,7 @@ class SingleSVGGlyphDictionary(GlyphDictionary):
     g_elt = deepcopy([g for g in self.glyphs if g.getAttribute("id") == id][0])
     g_elt.removeAttribute("id")
     if not name: name = id
-    glyph = EmicSection.from_glyph(Glyph(g_elt), name = name)
+    glyph = EmicSection.from_glyph(Glyph(g_elt), dictionary = self, name = name)
     
     path_list = glyph.svgpathtools_paths()
     

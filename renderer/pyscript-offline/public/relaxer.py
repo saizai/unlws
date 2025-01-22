@@ -48,9 +48,9 @@ class DifferentialBindingPoint(BindingPoint):
 class DifferentialSection(EmicSection):
   "An instance of a section with derivatives of position and rotation."
 
-  def __init__(self, name = None):
+  def __init__(self, dictionary = None, name = None):
     """Initialise this section."""
-    super().__init__(name = name)
+    super().__init__(dictionary = dictionary, name = name)
     # Derivatives of our position and angle statistics.
     self.dx = 0.
     self.dy = 0.
@@ -58,9 +58,12 @@ class DifferentialSection(EmicSection):
 
   @classmethod
   def from_emic_section(self, s):
-    "Return EmicSection s upgraded to a DifferentialSection."
-    ds = DifferentialSectionFromEmic(s)
-    return ds
+    "Return EmicSection s upgraded to a DifferentialSection (or s if it's already a DifferentialSection)."
+    if isinstance(s, DifferentialSection):
+      return s
+    else:
+      ds = DifferentialSectionFromEmic(s)
+      return ds
   
   def add_subsection(self, subsec):
     diffsubsec = DifferentialSection.from_emic_section(subsec)
@@ -146,6 +149,10 @@ class DifferentialSectionFromEmic(DifferentialSection):
   
   def svg(self):
     return self.emicSection.svg()
+  
+  @property
+  def dictionary(self):
+    return self.emicSection.dictionary
 
   
 

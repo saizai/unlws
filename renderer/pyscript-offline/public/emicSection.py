@@ -1,3 +1,4 @@
+import re
 from copy import deepcopy
 import math
 import xml.dom.minidom as minidom
@@ -5,15 +6,22 @@ import svgpathtools
 from BPHaver import BPHaver
 
 class EmicSection(BPHaver):
-  """A section within an UNLWS text, containing subsections and rels between them."""
+  """An UNLWS sentence, with the layout of how it sits on the page, containing subsections and rels between them."""
   # TODO: use this class as a middleman to handle multiple rels connected to the same BP.
 
-  def __init__(self, name = None):
+  def __init__(self, dictionary = None, name = None):
     """Initialise this Section to have a position, rotation, name, subsections and rels."""
     if not name: name = "sec_" + hex(id(object))
     self.name = name
 
     super().__init__()
+
+    if dictionary: # FIXME: this is a hack for DifferentialSectionFromEmic, which doesn't pass the dictionary parameter.
+      self.dictionary = dictionary
+      # FIXME: style does not belong in the dictionary
+      self.style = dictionary.style
+      # default SVG class for UNLWS text, to be used with the style
+      self.text_class = dictionary.text_class
 
     self.subsections = [] # subsections in the section
     self.rels = [] # rels in the section
@@ -27,8 +35,8 @@ class EmicSection(BPHaver):
     self.angle = 0.
   
   @classmethod
-  def from_glyph(self, glyph, name = None):
-    return SingleGlyphEmicSection(glyph, name = name)
+  def from_glyph(self, glyph, dictionary, name = None):
+    return SingleGlyphEmicSection(glyph, dictionary = dictionary, name = name)
 
   @property
   def angle_in_degrees(self):
@@ -40,7 +48,16 @@ class EmicSection(BPHaver):
     "Translation of this section as a complex number."
     return self.x+self.y*(0+1j)
   
-  
+  @property
+  def default_stroke_width(self):
+    "The default stroke width according to the style of this text."
+    # FIXME: this is a crude and brittle inspection of the CSS. Do better.
+    # E.g. look for self.text_class as a selector.
+    css = self.style.childNodes[0].data
+    span = re.search('stroke-width\\s*:\\s*([-+0-9.eE]*)', css).span(1)
+    return float(css[span[0]:span[1]])
+
+
   def add_subsection(self, subsec):
     "Add the EmicSection subsec to this section's list of subsections."
     self.subsections.append(subsec)
@@ -143,6 +160,25 @@ class EmicSection(BPHaver):
     
     return g
 
+  def svg_document(self):
+    """Return an SVG of this section as XML."""
+    svg = minidom.getDOMImplementation().createDocument("http://www.w3.org/2000/svg", "svg", None)
+    document = svg.documentElement
+    
+    document.setAttribute("xmlns", "http://www.w3.org/2000/svg")
+    document.setAttribute("xmlns:unlws-renderer", "https://github.com/saizai/unlws")
+    bbox = self.bounding_box()
+    document.setAttribute("viewBox", f"{bbox[0]} {bbox[2]} {bbox[1]-bbox[0]} {bbox[3]-bbox[2]}")
+    # for now, magic scaling of 32px per UNLWS em
+    document.setAttribute("width", str(int(32*(bbox[1]-bbox[0])))+"px")
+
+    document.appendChild(self.style)
+    
+    contents = self.svg()
+    document.appendChild(contents)
+    
+    return svg
+
   def __repr__(self):
     res = f"{type(self).__name__} \"{self.name}\" ("
     for subsec in self.subsections:
@@ -153,8 +189,8 @@ class EmicSection(BPHaver):
 class SingleGlyphEmicSection(EmicSection):
   """An instance of a glyph within a text."""
 
-  def __init__(self, glyph = None, name = None):
-    super().__init__(name = name)
+  def __init__(self, glyph = None, dictionary = None, name = None):
+    super().__init__(dictionary = dictionary, name = name)
     self.glyph = glyph
     # self.add_subsection(glyph) # TODO: Do I want this? Probably not, since Glyphs don't work like EmicSections
   

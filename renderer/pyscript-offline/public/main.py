@@ -1,7 +1,7 @@
 import math
 from pyscript import document
 from canvas import HTMLDOMCanvas
-from emicText import EmicText
+from emicSection import EmicSection
 from glyphDictionary import SingleSVGGlyphDictionary
 from relLine import RelLine
 import relaxer
@@ -11,7 +11,7 @@ board = document.querySelector("#svgboard")
 dictionary = SingleSVGGlyphDictionary('unlws_glyphs/glyphs.svg')
 
 def make_test_text(I_angle_offset = 0, distance_multiplier = 1, name = "test text"):
-    text = EmicText()
+    text = EmicSection(dictionary = dictionary, name = name)
 
     firstsg = dictionary.glyph_by_id("I")
     firstsg = relaxer.DifferentialSection.from_emic_section(firstsg)
@@ -60,8 +60,8 @@ def render_with_comments(text, description):
     # p.innerHTML += f"Derivative for top rel: {str(relaxer.deriv_velocity_penalty(text.rels[0]))}.<br>"
     p.innerHTML += f"Curvature penalty: {str(relaxer.total_penalty(text, {"velocity": 0, "curvature": 1, "distance": 0}))}.<br>"
     p.innerHTML += f"Curvature squared penalty: {str(relaxer.total_penalty(text, {"velocity": 0, "curvature": 0, "distance": 0, "curvature_squared": 1}))}.<br>"
-    p.innerHTML += f"Curvature penalty for top rel: {str(relaxer.curvature_penalty(text.rels[0]))}.<br>"
-    p.innerHTML += f"Curvature penalty for bottom rel: {str(relaxer.curvature_penalty(text.rels[1]))}.<br>"
+    # p.innerHTML += f"Curvature penalty for top rel: {str(relaxer.curvature_penalty(text.rels[0]))}.<br>"
+    # p.innerHTML += f"Curvature penalty for bottom rel: {str(relaxer.curvature_penalty(text.rels[1]))}.<br>"
 
     board.append(p)
 
@@ -69,14 +69,6 @@ text = make_test_text(math.pi/6, name = "initial")
 # render_with_comments(text, "Initial")
 
 velocity_relaxed_text = make_test_text(math.pi/6, name = "velocity relaxed")
-
-# print("subsections:")
-# for subsec in velocity_relaxed_text.subsections:
-#     print(subsec)
-#     print(subsec.lemma_bps)
-# print("rels:")
-# for rel in velocity_relaxed_text.rels:
-#     print(rel)
 
 relaxer.relax(velocity_relaxed_text, penalty_coefficients={"velocity": 1, "curvature": 0})
 render_with_comments(velocity_relaxed_text, "Relaxed velocity")
@@ -89,7 +81,7 @@ curvature_squared_relaxed_text = make_test_text(math.pi/6, name = "curvature² r
 relaxer.relax(curvature_squared_relaxed_text, penalty_coefficients={"velocity": 0, "curvature": 0, "curvature_squared": 20})
 # render_with_comments(curvature_squared_relaxed_text, "Relaxed squares of max curvature")
 
-big_text = relaxer.DifferentialSection()
+big_text = relaxer.DifferentialSection(dictionary = dictionary, name = "compound text")
 big_text.add_subsection(velocity_relaxed_text)
 big_text.add_subsection(curvature_squared_relaxed_text)
 # TODO: add BPs to the two sections and connect across them.
