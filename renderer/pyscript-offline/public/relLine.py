@@ -30,6 +30,22 @@ class RelLine:
     path.setAttribute("d", f"M{self.bp0.x} {self.bp0.y}C{self.bp0.handlex} {self.bp0.handley} {self.bp1.handlex} {self.bp1.handley} {self.bp1.x} {self.bp1.y}")
     return path
   
+  
+  def svg_bounding_box(self, color = "red"):
+    """Return a <rect> element that bounds this section."""
+    svg = minidom.getDOMImplementation().createDocument("http://www.w3.org/2000/svg", "svg", None)
+    # bbox = self.bounding_box(stroke_width_allowance=self.default_stroke_width) # TODO: what is the stroke width?
+    bbox = self.bounding_box()
+    r = svg.createElement("rect")
+    r.setAttribute("x", str(bbox[0]))
+    r.setAttribute("width", str(bbox[1]-bbox[0]))
+    r.setAttribute("y", str(bbox[2]))
+    r.setAttribute("height", str(bbox[3]-bbox[2]))
+    r.setAttribute("fill", "none")
+    r.setAttribute("stroke", color)
+    r.setAttribute("stroke-width", str(1./36))
+    return r
+
   def svgpathtools_bezier(self):
     "Returns this rel line as a svgpathtools path."
     return svgpathtools.CubicBezier(

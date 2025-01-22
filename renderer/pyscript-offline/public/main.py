@@ -45,11 +45,11 @@ def make_test_text(I_angle_offset = 0, distance_multiplier = 1, name = "test tex
     
     return text
 
-def render_with_comments(text, description):
+def render_with_comments(text, description, draw_bboxes = False):
     sub_board = document.createElement('div')
     canvas = HTMLDOMCanvas(sub_board)
 
-    canvas.render(text)
+    canvas.render(text, draw_bboxes = draw_bboxes)
 
     board.append(sub_board)
 
@@ -71,7 +71,7 @@ text = make_test_text(math.pi/6, name = "initial")
 velocity_relaxed_text = make_test_text(math.pi/6, name = "velocity relaxed")
 
 relaxer.relax(velocity_relaxed_text, penalty_coefficients={"velocity": 1, "curvature": 0})
-render_with_comments(velocity_relaxed_text, "Relaxed velocity")
+render_with_comments(velocity_relaxed_text, "Relaxed velocity", draw_bboxes = True)
 
 # curvature_relaxed_text = make_test_text(math.pi/6)
 # relaxer.relax(curvature_relaxed_text, penalty_coefficients={"velocity": 0, "curvature": 5})
@@ -85,4 +85,4 @@ big_text = relaxer.DifferentialSection(dictionary = dictionary, name = "compound
 big_text.add_subsection(velocity_relaxed_text)
 big_text.add_subsection(curvature_squared_relaxed_text)
 # TODO: add BPs to the two sections and connect across them.
-render_with_comments(big_text, "Compound text")
+render_with_comments(big_text, "Compound text", draw_bboxes = True)

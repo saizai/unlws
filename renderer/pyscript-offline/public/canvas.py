@@ -15,5 +15,5 @@ class HTMLDOMCanvas(Canvas):
     self.element = element
     pass
   
-  def render(self, emicsection):
-    self.element.innerHTML = emicsection.svg_document().toxml()
+  def render(self, emicsection, draw_bboxes = False):
+    self.element.innerHTML = emicsection.svg_document(draw_bboxes = draw_bboxes).toxml()

@@ -70,7 +70,7 @@ class EmicSection(BPHaver):
   # def svgpathtools_paths(self):
   #   """Return a list of svgpathtools Path objects represented by this section.
     
-  #   The Path objects returned are in global svg coordinates."""
+  #   The Path objects returned are in the parent section's coordinates."""
   #   # Code patterned on the svg2paths function in svgpathtools.
   #   # That has a file read baked in which means we can't use it directly.
   #   # TODO: we may want to keep the attributes.
@@ -122,59 +122,61 @@ class EmicSection(BPHaver):
             sbox[3]+stroke_width_allowance,
             )
   
-  def svg(self):
+
+  def svg_bounding_box(self, color = "red"):
+    """Return a <rect> element that bounds this section."""
+    svg = minidom.getDOMImplementation().createDocument("http://www.w3.org/2000/svg", "svg", None)
+    bbox = self.bounding_box(stroke_width_allowance=self.default_stroke_width)
+    r = svg.createElement("rect")
+    r.setAttribute("x", str(bbox[0]))
+    r.setAttribute("width", str(bbox[1]-bbox[0]))
+    r.setAttribute("y", str(bbox[2]))
+    r.setAttribute("height", str(bbox[3]-bbox[2]))
+    r.setAttribute("fill", "none")
+    r.setAttribute("stroke", color)
+    r.setAttribute("stroke-width", str(1./36))
+    return r
+
+  def svg(self, draw_bboxes = False, drawBPs = False):
     """Return this section as an XML <g> element."""
     document = minidom.getDOMImplementation().createDocument("http://www.w3.org/2000/svg", "svg", None)
     g = document.createElement("g")
-    
+          
     for subsection in self.subsections:
-      ## test: show bounding box
-      #bbox = glyph.bounding_box(stroke_width_allowance=self.default_stroke_width)
-      #r = svg.createElement("rect")
-      #r.setAttribute("x", str(bbox[0]))
-      #r.setAttribute("width", str(bbox[1]-bbox[0]))
-      #r.setAttribute("y", str(bbox[2]))
-      #r.setAttribute("height", str(bbox[3]-bbox[2]))
-      #r.setAttribute("fill", "none")
-      #r.setAttribute("stroke", "green")
-      #r.setAttribute("stroke-width", str(1./36))
-      #svg.documentElement.appendChild(r)
-      el = subsection.svg()
+      if draw_bboxes:
+        r = subsection.svg_bounding_box()
+        g.appendChild(r)
+
+      el = subsection.svg(draw_bboxes = draw_bboxes, drawBPs = drawBPs)
       el.setAttribute("class", self.text_class)
       g.appendChild(el)
+    
     for rel in self.rels:
-      ## test: show bounding box
-      #bbox = rel.bounding_box(stroke_width_allowance=self.default_stroke_width)
-      #r = svg.createElement("rect")
-      #r.setAttribute("x", str(bbox[0]))
-      #r.setAttribute("width", str(bbox[1]-bbox[0]))
-      #r.setAttribute("y", str(bbox[2]))
-      #r.setAttribute("height", str(bbox[3]-bbox[2]))
-      #r.setAttribute("fill", "none")
-      #r.setAttribute("stroke", "red")
-      #r.setAttribute("stroke-width", str(1./36))
-      #svg.documentElement.appendChild(r)
+      if draw_bboxes:
+        r = rel.svg_bounding_box(color = "green")
+        g.appendChild(r)
+      
       el = rel.svg()
       el.setAttribute("class", self.text_class)
       g.appendChild(el)
     
     return g
 
-  def svg_document(self):
+  def svg_document(self, draw_bboxes = False):
     """Return an SVG of this section as XML."""
     svg = minidom.getDOMImplementation().createDocument("http://www.w3.org/2000/svg", "svg", None)
     document = svg.documentElement
     
     document.setAttribute("xmlns", "http://www.w3.org/2000/svg")
     document.setAttribute("xmlns:unlws-renderer", "https://github.com/saizai/unlws")
-    bbox = self.bounding_box()
+    bbox = self.bounding_box(stroke_width_allowance = 5 * self.default_stroke_width)
     document.setAttribute("viewBox", f"{bbox[0]} {bbox[2]} {bbox[1]-bbox[0]} {bbox[3]-bbox[2]}")
     # for now, magic scaling of 32px per UNLWS em
     document.setAttribute("width", str(int(32*(bbox[1]-bbox[0])))+"px")
 
     document.appendChild(self.style)
     
-    contents = self.svg()
+    contents = self.svg(draw_bboxes = draw_bboxes)
     document.appendChild(contents)
     
     return svg
@@ -199,7 +201,7 @@ class SingleGlyphEmicSection(EmicSection):
     return self.glyph.lemma_svg
     # TODO: this method may be unnecessary and confusing
 
-  def svg(self, drawBPs = False):
+  def svg(self, draw_bboxes = False, drawBPs = False):
     """Return a rendered SVG, with the correct coordinate transform.
     
     If `drawBPs` is true, draw the BPs as green circles."""
@@ -234,7 +236,7 @@ class SingleGlyphEmicSection(EmicSection):
   def svgpathtools_paths(self):
     """Return a list of svgpathtools Path objects represented by this glyph.
     
-    The Path objects returned are in global svg coordinates."""
+    The Path objects returned are in the parent section's coordinates."""
     # Code patterned on the svg2paths function in svgpathtools.
     # That has a file read baked in which means we can't use it directly.
     # TODO: we may want to keep the attributes.

@@ -147,8 +147,8 @@ class DifferentialSectionFromEmic(DifferentialSection):
   def style(self):
     return self.emicSection.style
   
-  def svg(self):
-    return self.emicSection.svg()
+  def svg(self, draw_bboxes = False, drawBPs = False):
+    return self.emicSection.svg(draw_bboxes = draw_bboxes, drawBPs = drawBPs)
   
   @property
   def dictionary(self):
