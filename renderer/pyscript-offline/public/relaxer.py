@@ -1,4 +1,4 @@
-import numpy, svgpathtools
+import math, numpy, svgpathtools
 from bindingPoint import BindingPoint
 from relLine import RelLine
 from emicSection import EmicSection
