@@ -78,15 +78,18 @@ render_with_comments(velocity_relaxed_text, "Relaxed velocity", draw_bboxes = Tr
 # render_with_comments(curvature_relaxed_text, "Relaxed max curvature")
 
 curvature_squared_relaxed_text = make_test_text(math.pi/6, name = "curvature² relaxed")
+curvature_squared_relaxed_text.color = "orange"
 relaxer.relax(curvature_squared_relaxed_text, penalty_coefficients={"velocity": 0, "curvature": 0, "curvature_squared": 20})
 # render_with_comments(curvature_squared_relaxed_text, "Relaxed squares of max curvature")
 
 # Add BPs to the sections, so that they can be connected to eachother.
 velocity_relaxed_text.addBP("X", velocity_relaxed_text.subsections[1].bp("X"))
+velocity_relaxed_text.color = "blue"
 curvature_squared_relaxed_text.addBP("X", curvature_squared_relaxed_text.subsections[2].bp("X"))
 
 # Make a big text that has two subsections, both of which have their own subsections.
 big_text = relaxer.DifferentialSection(dictionary = dictionary, name = "compound text")
+# big_text.color = "black" # FIXME: doesn't work because the .unlws class overrides the <g> element's stroke.
 big_text.add_subsection(velocity_relaxed_text)
 big_text.add_subsection(curvature_squared_relaxed_text)
 
@@ -94,4 +97,4 @@ big_text.add_subsection(curvature_squared_relaxed_text)
 inter_section_rel = RelLine(velocity_relaxed_text, "X", curvature_squared_relaxed_text, "X")
 big_text.add_rel(inter_section_rel)
 
-render_with_comments(big_text, "Compound text", draw_bboxes = True)
+render_with_comments(big_text, "Compound text")

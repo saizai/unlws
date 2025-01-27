@@ -22,6 +22,8 @@ class EmicSection(BPHaver):
       self.style = dictionary.style
       # default SVG class for UNLWS text, to be used with the style
       self.text_class = dictionary.text_class
+    
+    self.color = None
 
     self.subsections = [] # subsections in the section
     self.rels = [] # rels in the section
@@ -141,6 +143,8 @@ class EmicSection(BPHaver):
     """Return this section as an XML <g> element."""
     document = minidom.getDOMImplementation().createDocument("http://www.w3.org/2000/svg", "svg", None)
     g = document.createElement("g")
+    if self.color:
+      g.setAttribute("stroke", self.color)
           
     for subsection in self.subsections:
       if draw_bboxes:
@@ -148,7 +152,7 @@ class EmicSection(BPHaver):
         g.appendChild(r)
 
       el = subsection.svg(draw_bboxes = draw_bboxes, drawBPs = drawBPs)
-      el.setAttribute("class", self.text_class)
+      # el.setAttribute("class", self.text_class)
       g.appendChild(el)
     
     for rel in self.rels:
@@ -157,7 +161,7 @@ class EmicSection(BPHaver):
         g.appendChild(r)
       
       el = rel.svg()
-      el.setAttribute("class", self.text_class)
+      # el.setAttribute("class", self.text_class)
       g.appendChild(el)
     
     return g
@@ -177,6 +181,7 @@ class EmicSection(BPHaver):
     document.appendChild(self.style)
     
     contents = self.svg(draw_bboxes = draw_bboxes)
+    contents.setAttribute("class", self.text_class)
     document.appendChild(contents)
     
     return svg
