@@ -252,8 +252,8 @@ class SingleGlyphEmicSection(EmicSection):
         for el in self.lemma_svg.getElementsByTagName('polyline')]
     d_strings += [svgpathtools.polygon2pathd(dom2dict(el))
         for el in self.lemma_svg.getElementsByTagName('polygon')]
-    d_strings += [('M' + l.getAttribute('x1') + ' ' + l.getAttribute('y1') +
-                   'L' + l.getAttribute('x2') + ' ' + l.getAttribute('y2'))
+    d_strings += [('M' + el.getAttribute('x1') + ' ' + el.getAttribute('y1') +
+                   'L' + el.getAttribute('x2') + ' ' + el.getAttribute('y2'))
         for el in self.lemma_svg.getElementsByTagName('line')]
     d_strings += [svgpathtools.ellipse2pathd(dom2dict(el))
         for el in self.lemma_svg.getElementsByTagName('ellipse')]
