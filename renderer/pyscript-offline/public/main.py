@@ -97,4 +97,6 @@ big_text.add_subsection(curvature_squared_relaxed_text)
 inter_section_rel = RelLine(velocity_relaxed_text, "X", curvature_squared_relaxed_text, "X")
 big_text.add_rel(inter_section_rel)
 
+relaxer.relax(big_text)
+
 render_with_comments(big_text, "Compound text")

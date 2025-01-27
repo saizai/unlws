@@ -109,6 +109,7 @@ class EmicSection(BPHaver):
     Arguments:
     stroke_width_allowance: pad the bounding box by this much on each side,
       to allow for stroke width"""
+    # FIXME: this doesn't work when the section is transformed.
     subsection_bboxes = [p.bounding_box(0.) for p in self.subsections]
 
     sbox = (
@@ -145,6 +146,7 @@ class EmicSection(BPHaver):
     g = document.createElement("g")
     if self.color:
       g.setAttribute("stroke", self.color)
+    g.setAttribute("transform", f"translate({self.x} {self.y}) rotate({self.angle_in_degrees})")
           
     for subsection in self.subsections:
       if draw_bboxes:

@@ -228,6 +228,8 @@ def total_penalty(section, penalty_coefficients = {}):
   penalty += curvature_partial_penalty*penalty_coefficients["curvature"]
   penalty += curvature_squared_partial_penalty*penalty_coefficients["curvature_squared"]
 
+  # FIXME: this only works for trivial sections (one SingleGlyphEmicSection), not for ones that have multiple subsections.
+  # This needs to take into account the size and ideally also the shape of the subsections.
   distance_partial_penalty = 0
   if penalty_coefficients["distance"] != 0:
     for subsec1 in section.subsections:
