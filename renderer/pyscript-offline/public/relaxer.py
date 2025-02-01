@@ -87,6 +87,34 @@ class DifferentialGlyph(Glyph):
     diff_p.handledy = self.dy + self.dangle * q.handlex
     return diff_p
 
+
+def relax_property_step(object, property_name, section, step_size, penalty_coefficients = {}):
+  """Try increasing and decreasing object.property_name by step_size and see which gives a smaller total_penalty."""
+  initial_angle = getattr(object, property_name)
+
+  setattr(object, property_name, initial_angle + step_size)
+  penalty1 = total_penalty(section, penalty_coefficients = penalty_coefficients)
+
+  setattr(object, property_name, initial_angle - step_size)
+  penalty2 = total_penalty(section, penalty_coefficients = penalty_coefficients)
+
+  if penalty1 < penalty2:
+    setattr(object, property_name, initial_angle + step_size)
+
+def relax_step(section, step_size, penalty_coefficients = {}):
+  """Do one step of relaxing all relaxable properties in the section."""
+  for glyph in section.glyphs:
+    relax_property_step(glyph, "angle", section, step_size = step_size, penalty_coefficients = penalty_coefficients)
+    relax_property_step(glyph, "x", section, step_size = step_size, penalty_coefficients = penalty_coefficients)
+    relax_property_step(glyph, "y", section, step_size = step_size, penalty_coefficients = penalty_coefficients)
+
+def relax(section, step_count = 100, first_step_size = 0.1, penalty_coefficients = {}):
+  """Relax all relaxable properties in the section."""
+  for i in range(step_count):
+    step_size = first_step_size * 0.95**i
+    relax_step(section, step_size = step_size, penalty_coefficients = penalty_coefficients)
+
+
 def dpoly(rel):
   """Return the numpy.poly1d of the first-order derivative 
   in the gradient-descent variable of the parametrised curve."""
@@ -97,6 +125,51 @@ def dpoly(rel):
 
 # The particular penalties below are not necessarily the ones we'll want to
 # go with in the end.
+
+def total_penalty(section, penalty_coefficients = {}):
+  """Penalty score for the whole section.
+  
+  Different penalties are weighted according to penalty_coefficients.
+  penalty_coefficients keys:
+  * `velocity`: Penalty for rels not going at constant velocity;
+  * `curvature`: Maximum unsigned curvature attained at any point of this rel;
+  * `curvature_squared`: Square of the above;
+  * `distance`: Penalty for glyph centers being close to each other."""
+  penalty = 0
+
+  # Combine the default values with the passed values
+  penalty_coefficients = {"velocity": 0.5, "curvature": 0.5, "distance": 10, "curvature_squared": 0} | penalty_coefficients
+
+  # FIXME: repetitive code below
+
+  velocity_partial_penalty = 0
+  if penalty_coefficients["velocity"] != 0:
+    for rel in section.rels:
+      velocity_partial_penalty += velocity_penalty(rel)
+  penalty += velocity_partial_penalty*penalty_coefficients["velocity"]
+  
+  curvature_partial_penalty = 0
+  curvature_squared_partial_penalty = 0
+  if not (penalty_coefficients["curvature"] == 0 and penalty_coefficients["curvature_squared"] == 0):
+    for rel in section.rels:
+      current_penalty = curvature_penalty(rel)
+      curvature_partial_penalty += current_penalty
+      curvature_squared_partial_penalty += current_penalty*current_penalty
+  penalty += curvature_partial_penalty*penalty_coefficients["curvature"]
+  penalty += curvature_squared_partial_penalty*penalty_coefficients["curvature_squared"]
+
+  distance_partial_penalty = 0
+  if penalty_coefficients["distance"] != 0:
+    for glyph1 in section.glyphs:
+      for glyph2 in section.glyphs:
+        if glyph1 is glyph2:
+          continue
+        center_distance_squared = (glyph1.x-glyph2.x)**2 + (glyph1.y-glyph2.y)**2
+        distance_partial_penalty += 1 / (1+center_distance_squared)
+  penalty += distance_partial_penalty*penalty_coefficients["distance"]
+
+  return penalty
+
 
 def velocity_penalty(rel):
   "Penalty for this rel not going at constant velocity."
