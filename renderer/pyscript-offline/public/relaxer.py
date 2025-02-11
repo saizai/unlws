@@ -140,9 +140,12 @@ class DifferentialSectionFromEmic(DifferentialSection):
     # assert len(self.emicSection.lemma_bps) == 0, f"Warning: trying to overwrite lemma_bps {self.emicSection.lemma_bps} of {self.emicSection}"
     # self.emicSection.lemma_bps = value
   
-  def bounding_box(self, stroke_width_allowance=0):
-    return self.emicSection.bounding_box(stroke_width_allowance)
+  def bounding_box(self, stroke_width_allowance=0, own_coords = False):
+    return self.emicSection.bounding_box(stroke_width_allowance, own_coords = own_coords)
   
+  def bounding_disk_radius(self):
+    return self.emicSection.bounding_disk_radius()
+
   @property
   def style(self):
     return self.emicSection.style
@@ -171,18 +174,24 @@ def relax_property_step(object, property_name, section, step_size, penalty_coeff
   if penalty1 < penalty2:
     setattr(object, property_name, initial_angle + step_size)
 
-def relax_step(section, step_size, penalty_coefficients = {}):
-  """Do one step of relaxing all relaxable properties in the section."""
+def relax_step(section, step_size, penalty_coefficients = {}, recurse = True):
+  """Do one step of relaxing all relaxable properties in the section.
+  
+  If recurse is True, relax_step will also be called for each subsection."""
   for subsec in section.subsections:
+    if recurse:
+      relax_step(subsec, step_size, penalty_coefficients, recurse)
     relax_property_step(subsec, "angle", section, step_size = step_size, penalty_coefficients = penalty_coefficients)
     relax_property_step(subsec, "x", section, step_size = step_size, penalty_coefficients = penalty_coefficients)
     relax_property_step(subsec, "y", section, step_size = step_size, penalty_coefficients = penalty_coefficients)
 
-def relax(section, step_count = 100, first_step_size = 0.1, penalty_coefficients = {}):
-  """Relax all relaxable properties in the section."""
+def relax(section, step_count = 100, first_step_size = 0.1, penalty_coefficients = {}, recurse = True):
+  """Relax all relaxable properties in the section.
+  
+  If recurse is True, all sections within this one will also be relaxed."""
   for i in range(step_count):
     step_size = first_step_size * 0.95**i
-    relax_step(section, step_size = step_size, penalty_coefficients = penalty_coefficients)
+    relax_step(section, step_size = step_size, penalty_coefficients = penalty_coefficients, recurse = recurse)
 
 
 def dpoly(rel):
@@ -193,12 +202,11 @@ def dpoly(rel):
 
 
 
-# The particular penalties below are not necessarily the ones we'll want to
-# go with in the end.
-
 def total_penalty(section, penalty_coefficients = {}):
   """Penalty score for the whole section.
   
+  TODO: these penalties only look at this section and its immediate subsections and rels. Sometimes the result might be better if you also take siblings or grandchildren into account.
+
   Different penalties are weighted according to penalty_coefficients.
   penalty_coefficients keys:
   * `velocity`: Penalty for rels not going at constant velocity;
@@ -208,7 +216,7 @@ def total_penalty(section, penalty_coefficients = {}):
   penalty = 0
 
   # Combine the default values with the passed values
-  penalty_coefficients = {"velocity": 0.5, "curvature": 0.5, "distance": 10, "curvature_squared": 0} | penalty_coefficients
+  penalty_coefficients = {"velocity": 0.1, "curvature": 0, "distance": 10, "curvature_squared": 5} | penalty_coefficients
 
   # FIXME: repetitive code below
 
@@ -228,16 +236,20 @@ def total_penalty(section, penalty_coefficients = {}):
   penalty += curvature_partial_penalty*penalty_coefficients["curvature"]
   penalty += curvature_squared_partial_penalty*penalty_coefficients["curvature_squared"]
 
-  # FIXME: this only works for trivial sections (one SingleGlyphEmicSection), not for ones that have multiple subsections.
-  # This needs to take into account the size and ideally also the shape of the subsections.
+  # FIXME: this doesn't take into account the shape of the subsections.
   distance_partial_penalty = 0
   if penalty_coefficients["distance"] != 0:
     for subsec1 in section.subsections:
       for subsec2 in section.subsections:
         if subsec1 is subsec2:
           continue
-        center_distance_squared = (subsec1.x-subsec2.x)**2 + (subsec1.y-subsec2.y)**2
-        distance_partial_penalty += 1 / (1+center_distance_squared)
+        d_squared = (subsec1.x-subsec2.x)**2 + (subsec1.y-subsec2.y)**2
+        # The normalization below is to ensure scale invariance, that is, we account for sections of radically different sizes.
+        # For example, if you make the subsections twice as large and double the distance between them, then the size of their relaxation steps should double.
+        # TODO: do the rest of the penalty functions have scale invariance?
+        min_d = subsec1.bounding_disk_radius() + subsec2.bounding_disk_radius()
+        normalized_d_squared = d_squared / min_d**2
+        distance_partial_penalty += min_d / (1+normalized_d_squared)
   penalty += distance_partial_penalty*penalty_coefficients["distance"]
 
   return penalty

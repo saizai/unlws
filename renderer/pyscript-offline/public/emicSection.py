@@ -67,6 +67,18 @@ class EmicSection(BPHaver):
   def add_rel(self, rel):
     self.rels.append(rel)
 
+
+  def bp(self, name):
+    """Return the BP `name`, in sentence coordinates with transformation applied."""
+    return self.lemma_bps[name].rotate(self.angle).translate(self.x, self.y)
+  
+  def parent_coords_to_own(self, x, y):
+    """Return (x, y) from the parent's coordinate system transformed to this BPHaver's own coordinate system."""
+    xnew, ynew = x-self.x, y-self.y
+    c, s = math.cos(-self.angle), math.sin(-self.angle)
+    xnew = c*xnew - s*ynew
+    ynew = s*xnew + c*ynew
+    return xnew, ynew
   
   
   # def svgpathtools_paths(self):
@@ -102,15 +114,20 @@ class EmicSection(BPHaver):
   #   return [p.rotated(self.angle_in_degrees, origin=0+0j).translated(self.z)
   #       for p in path_list]
   
-  def bounding_box(self, stroke_width_allowance = 0.):
+  def bounding_box(self, stroke_width_allowance = 0., own_coords = False):
     """Return the bounding box for this section, as a 4-tuple
     (xmin, xmax, ymin, ymax).
     
     Arguments:
     stroke_width_allowance: pad the bounding box by this much on each side,
       to allow for stroke width"""
+    
+    # Temporary solution for the below fixme
+    r = self.bounding_disk_radius()
+    return (-r, r, -r, r)
+
     # FIXME: this doesn't work when the section is transformed.
-    subsection_bboxes = [p.bounding_box(0.) for p in self.subsections]
+    subsection_bboxes = [p.bounding_box(0., own_coords = own_coords) for p in self.subsections]
 
     sbox = (
             min(b[0] for b in subsection_bboxes),
@@ -125,20 +142,35 @@ class EmicSection(BPHaver):
             sbox[3]+stroke_width_allowance,
             )
   
+  def bounding_disk_radius(self):
+    """Gives the radius of a disk centered at (0, 0) that contains the bounding disks of its subsections."""
 
-  def svg_bounding_box(self, color = "red"):
-    """Return a <rect> element that bounds this section."""
+    return max(math.sqrt(subsec.x**2+subsec.y**2) + subsec.bounding_disk_radius() for subsec in self.subsections)
+  
+
+  def svg_bounding_box(self, color = "red", own_coords = False):
+    # """Return a <rect> element that bounds this section."""
+    # svg = minidom.getDOMImplementation().createDocument("http://www.w3.org/2000/svg", "svg", None)
+    # bbox = self.bounding_box(stroke_width_allowance=self.default_stroke_width)
+    # r = svg.createElement("rect")
+    # r.setAttribute("x", str(bbox[0]))
+    # r.setAttribute("width", str(bbox[1]-bbox[0]))
+    # r.setAttribute("y", str(bbox[2]))
+    # r.setAttribute("height", str(bbox[3]-bbox[2]))
+    # r.setAttribute("fill", "none")
+    # r.setAttribute("stroke", color)
+    # r.setAttribute("stroke-width", str(1./36))
+    # return r
+    """Return a <circle> element that bounds this section."""
     svg = minidom.getDOMImplementation().createDocument("http://www.w3.org/2000/svg", "svg", None)
-    bbox = self.bounding_box(stroke_width_allowance=self.default_stroke_width)
-    r = svg.createElement("rect")
-    r.setAttribute("x", str(bbox[0]))
-    r.setAttribute("width", str(bbox[1]-bbox[0]))
-    r.setAttribute("y", str(bbox[2]))
-    r.setAttribute("height", str(bbox[3]-bbox[2]))
-    r.setAttribute("fill", "none")
-    r.setAttribute("stroke", color)
-    r.setAttribute("stroke-width", str(1./36))
-    return r
+    c = svg.createElement("circle")
+    c.setAttribute("cx", str(self.x))
+    c.setAttribute("cy", str(self.y))
+    c.setAttribute("r", str(self.bounding_disk_radius()))
+    c.setAttribute("fill", "none")
+    c.setAttribute("stroke", color)
+    c.setAttribute("stroke-width", str(1./36))
+    return c
 
   def svg(self, draw_bboxes = False, drawBPs = False):
     """Return this section as an XML <g> element."""
@@ -240,10 +272,10 @@ class SingleGlyphEmicSection(EmicSection):
     
     return surface_svg
   
-  def svgpathtools_paths(self):
+  def svgpathtools_paths(self, own_coords = False):
     """Return a list of svgpathtools Path objects represented by this glyph.
     
-    The Path objects returned are in the parent section's coordinates."""
+    The Path objects returned are in the parent section's coordinates, unless own_coords is set to True."""
     # Code patterned on the svg2paths function in svgpathtools.
     # That has a file read baked in which means we can't use it directly.
     # TODO: we may want to keep the attributes.
@@ -270,17 +302,20 @@ class SingleGlyphEmicSection(EmicSection):
         for el in self.lemma_svg.getElementsByTagName('rect')]
     
     path_list = [svgpathtools.parse_path(d) for d in d_strings]
-    return [p.rotated(self.angle_in_degrees, origin=0+0j).translated(self.z)
+    if own_coords:
+      return path_list
+    else:
+      return [p.rotated(self.angle_in_degrees, origin=0+0j).translated(self.z)
         for p in path_list]
   
-  def bounding_box(self, stroke_width_allowance = 0.):
+  def bounding_box(self, stroke_width_allowance = 0., own_coords = False):
     """Return the bounding box for this glyph, as a 4-tuple
     (xmin, xmax, ymin, ymax).
     
     Arguments:
     stroke_width_allowance: pad the bounding box by this much on each side,
       to allow for stroke width"""
-    path_bboxes = [p.bbox() for p in self.svgpathtools_paths()]
+    path_bboxes = [p.bbox() for p in self.svgpathtools_paths(own_coords = own_coords)]
     sbox = (
             min(b[0] for b in path_bboxes),
             max(b[1] for b in path_bboxes),
@@ -293,3 +328,10 @@ class SingleGlyphEmicSection(EmicSection):
             sbox[2]-stroke_width_allowance,
             sbox[3]+stroke_width_allowance,
             )
+
+  def bounding_disk_radius(self):
+    xmin, xmax, ymin, ymax = self.bounding_box(own_coords = True) # FIXME: take into account stroke width
+    distance_to_vertical_edge = max(abs(xmin), abs(xmax))
+    distance_to_horizontal_edge = max(abs(ymin), abs(ymax))
+    distance_to_farthest_corner = math.sqrt(distance_to_vertical_edge**2 + distance_to_horizontal_edge**2)
+    return distance_to_farthest_corner

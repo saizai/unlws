@@ -5,7 +5,7 @@ class BindingPoint:
   """An instance of a binding point, either within a glyph or a larger text.
   
   Properties:
-  x, y: global svg coordinates, i.e. _not_ relative to any glyph
+  x, y: coordinates relative to the host
   handlex, handley: ditto for the spline handle
   host: the glyph this BP belongs to
   name: the name of this BP within `host`"""

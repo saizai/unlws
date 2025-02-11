@@ -22,11 +22,7 @@ class BPHaver():
     bp.host = self
     bp.name = name
     self.lemma_bps[name] = bp
-  
-  def bp(self, name):
-    """Return the BP `name`, in sentence coordinates with transformation applied."""
-    return self.lemma_bps[name].rotate(self.angle).translate(self.x, self.y)
-  
+
   def copy_BPs_from(self, source):
     "Given the BPHaver source, add all of source's BPs to this BPHaver by reference."
     for bp in source.lemma_bps.values():
