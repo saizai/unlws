@@ -4,6 +4,7 @@ from canvas import HTMLDOMCanvas
 from emicSection import EmicSection
 from glyphDictionary import SingleSVGGlyphDictionary
 from relLine import RelLine
+from bindingPoint import RelativeBindingPoint
 import relaxer
 
 board = document.querySelector("#svgboard")
@@ -33,8 +34,12 @@ def make_test_text(I_angle_offset = 0, distance_multiplier = 1, name = "test tex
     cat_sec.add_subsection(cat)
     cat_sec.angle = math.pi / 6
     text.add_subsection(cat_sec)
-
-    rel = RelLine(firstsg, "X", cat, "X")
+    
+    cat_relative_bp = RelativeBindingPoint(cat, "X")
+    text.addBP("cat bp", cat_relative_bp)
+    
+    # FIXME: why is the cat end of this rel horizontal (it thinks "cat" is rotated 90°, when it's really 30°)
+    rel = RelLine(firstsg, "X", text, "cat bp")
     text.add_rel(rel)
 
     # cat2 = dictionary.glyph_by_id("cat", name = "cat2")

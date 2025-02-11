@@ -19,8 +19,6 @@ class BPHaver():
 
   def addBP(self, name, bp):
     """Add `bp` with the name `name`."""
-    bp.host = self
-    bp.name = name
     self.lemma_bps[name] = bp
 
   def copy_BPs_from(self, source):

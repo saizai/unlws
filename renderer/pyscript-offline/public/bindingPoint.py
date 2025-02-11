@@ -59,3 +59,51 @@ class BindingPoint:
     return p
 
 
+class RelativeBindingPoint(BindingPoint):
+  """A simulation of a BP. It gives the coordinates as if the BP was a BP of `sub_host`'s sibling, when it is actually a BP of sub_host."""
+  def __init__(self, sub_host, sub_bp_name):
+    self.sub_bp_name = sub_bp_name
+    self.sub_host = sub_host
+
+  @property
+  def sub_bp(self):
+    return self.sub_host.bp(self.sub_bp_name)
+  
+  @property
+  def x(self):
+    return self.sub_bp.x
+  @property
+  def y(self):
+    return self.sub_bp.y
+  @property
+  def handlex(self):
+    return self.sub_bp.handlex
+  @property
+  def handley(self):
+    return self.sub_bp.handley
+  
+  def set_position(self, x, y):
+    self.x, self.y = self.sub_host.parent_coords_to_own(x, y)
+  def set_handles(self, handlex, handley):
+    self.handlex, self.handley = self.sub_host.parent_coords_to_own(handlex, handley)
+  
+  def translate(self, dx, dy):
+    x = self.x + dx
+    y = self.y + dy
+    handlex = self.handlex + dx
+    handley = self.handley + dy
+    # self.set_position(x, y)
+    # self.set_handles(handlex, handley)
+    p = BindingPoint(x, y, handlex, handley)
+    return p
+
+  def rotate(self, dangle):
+    c, s = math.cos(dangle), math.sin(dangle)
+    x = c*self.x - s*self.y
+    y = s*self.x + c*self.y
+    handlex = c*self.handlex - s*self.handley
+    handley = s*self.handlex + c*self.handley
+    # self.set_position(x, y)
+    # self.set_handles(handlex, handley)
+    p = BindingPoint(x, y, handlex, handley)
+    return p
