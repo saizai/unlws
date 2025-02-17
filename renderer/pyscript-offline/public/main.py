@@ -11,16 +11,16 @@ board = document.querySelector("#svgboard")
 
 dictionary = SingleSVGGlyphDictionary('unlws_glyphs/glyphs.svg')
 
-def make_test_text(I_angle_offset = 0, distance_multiplier = 1, name = "test text"):
+def make_test_text(angle_offset = 0, distance_multiplier = 1, name = "test text"):
     text = EmicSection(dictionary = dictionary, name = name)
 
-    text.angle = math.pi/2
+    text.angle = math.pi/3 + angle_offset # FIXME: the cat end of the rel responds doubly to this changing.
 
     firstsg = dictionary.glyph_by_id("I")
     firstsg = relaxer.DifferentialSection.from_emic_section(firstsg)
     firstsg.x = -2. * distance_multiplier
     firstsg.y = 0.
-    firstsg.angle = -math.pi/2 + I_angle_offset#math.pi/6#-math.pi/2
+    firstsg.angle = -math.pi/2#math.pi/6#-math.pi/2
     firstsg_sec = relaxer.DifferentialSection(dictionary, "I wrapper")
     firstsg_sec.add_subsection(firstsg)
     text.add_subsection(firstsg_sec)
@@ -32,13 +32,12 @@ def make_test_text(I_angle_offset = 0, distance_multiplier = 1, name = "test tex
     cat.angle = math.pi
     cat_sec = relaxer.DifferentialSection(dictionary, "cat wrapper")
     cat_sec.add_subsection(cat)
-    cat_sec.angle = math.pi / 6
+    cat_sec.angle = math.pi/6 # FIXME: the rel should respond to this changing, but doesn't.
     text.add_subsection(cat_sec)
     
     cat_relative_bp = RelativeBindingPoint(cat, "X")
     text.addBP("cat bp", cat_relative_bp)
     
-    # FIXME: why is the cat end of this rel horizontal (it thinks "cat" is rotated 90°, when it's really 30°)
     rel = RelLine(firstsg, "X", text, "cat bp")
     text.add_rel(rel)
 
@@ -87,8 +86,8 @@ def render_relaxation_steps(text, name, penalty_coefficients={}, stepcount_per_i
         relaxer.relax(text, step_count=stepcount_per_iteration, penalty_coefficients=penalty_coefficients)
         render_with_comments(text, f"{name} after {stepcount_per_iteration*(i+1)} steps", draw_bboxes=True)
 
-for i in range(3):
-    text = make_test_text(math.pi/6, name = "initial", distance_multiplier=i)
+for i in range(4):
+    text = make_test_text(angle_offset=i*math.pi/6, name = "initial")
     render_with_comments(text, "Initial", draw_bboxes=True)
 
 # text = make_test_text(math.pi/6, name = "initial")
