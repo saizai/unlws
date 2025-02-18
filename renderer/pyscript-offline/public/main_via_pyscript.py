@@ -1,10 +1,20 @@
 from pyscript import document
 from canvas import HTMLDOMCanvas
-import main
+from Main import Main
 
-board = document.querySelector("#svgboard")
-canvas = HTMLDOMCanvas(board)
+board_div = document.body.querySelector("#svgboard")
 
-append_text = lambda x: document.body.append(x)
+def append_canvas():
+  sub_board = document.createElement("div")
+  board_div.append(sub_board)
+  canvas = HTMLDOMCanvas(sub_board)
+  canvas.parent = sub_board
+  return canvas
 
-main.main(canvas=canvas, append_text=append_text)
+def append_text(container, text):
+  node = document.createTextNode(text)
+  container.appendChild(node)
+
+main_obj = Main(document, append_canvas, append_text)
+
+main_obj.main()

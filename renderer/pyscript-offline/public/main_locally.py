@@ -1,6 +1,6 @@
 import xml.dom.minidom as minidom
 from canvas import XMLCanvas
-import main
+from Main import Main
 
 document = minidom.getDOMImplementation().createDocument("https://www.w3.org/1999/xhtml/", "html", None) # TODO: add doctype
 
@@ -10,19 +10,33 @@ document = minidom.getDOMImplementation().createDocument("https://www.w3.org/199
 html = document.childNodes[0] # TODO: bad style?
 body = html.appendChild(document.createElement("body"))
 
-canvas_div = document.createElement("div")
-body.appendChild(canvas_div)
-canvas = XMLCanvas(canvas_div)
+board_div = document.createElement("div")
+body.appendChild(board_div)
 
 body.appendChild(document.createElement("hr"))
 
-def append_text(text):
-    node = document.createTextNode(text)
-    body.appendChild(node)
+def append_canvas():
+  sub_board = document.createElement("div")
+  board_div.appendChild(sub_board)
+  canvas = XMLCanvas(sub_board)
+  canvas.parent = sub_board
+  return canvas
 
-main.main(canvas=canvas, append_text=append_text)
+def append_text(container, text):
+  node = document.createTextNode(text)
+  container.appendChild(node)
+
+
+# Adding properties to make the minidom objects behave more like HTML DOM objects.
+# This might get ugly if we want more features like this.
+document.body = body
+
+
+main_obj = Main(document, append_canvas, append_text)
+
+main_obj.main()
 
 with open("output.html", mode="w", encoding="utf-8") as output:
-    output.write(document.toprettyxml())
+  output.write(document.toprettyxml())
 
 # TODO: somehow automatically open and/or refresh the file? opening it is still a bit of a hassle
