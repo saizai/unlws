@@ -2,18 +2,19 @@ import xml.dom.minidom as minidom
 from canvas import XMLCanvas
 from main import Main
 
-document = minidom.getDOMImplementation().createDocument("https://www.w3.org/1999/xhtml/", "html", None) # TODO: add doctype
+document = minidom.parse("index.html")
 
-# TODO: add style, encoding etc.
-# (Should this be done some other way? Maybe making a template HTML file and using that for both ./index.html and this?)
-
-html = document.childNodes[0] # TODO: bad style?
-body = html.appendChild(document.createElement("body"))
-
-board_div = document.createElement("div")
-body.appendChild(board_div)
-
-body.appendChild(document.createElement("hr"))
+# FIXME: This assumes a pretty specific template for index.html
+# The child node indexes are n*2+1 from what you might expect, because newlines are treated as text nodes.
+html = document.childNodes[1]
+head = html.childNodes[1]
+for node in head.childNodes: # Remove the pyscript import
+  if node.nodeName == "script" and "src" in node.attributes and node.attributes["src"].value == "./pyscript/core.js":
+    head.removeChild(node)
+body = html.childNodes[3]
+board_div = body.childNodes[1]
+script_node = body.childNodes[5]
+body.removeChild(script_node) # Remove the pyscript call
 
 def append_canvas():
   sub_board = document.createElement("div")
