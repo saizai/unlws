@@ -1,19 +1,21 @@
 import xml.dom.minidom as minidom
+from minidom_extras import remove_whitespace_nodes
 from canvas import XMLCanvas
 from main import Main
 
 document = minidom.parse("index.html")
 
+remove_whitespace_nodes(document)
+
 # FIXME: This assumes a pretty specific template for index.html
-# The child node indexes are n*2+1 from what you might expect, because newlines are treated as text nodes.
 html = document.childNodes[1]
-head = html.childNodes[1]
+head = html.childNodes[0]
 for node in head.childNodes: # Remove the pyscript import
   if node.nodeName == "script" and "src" in node.attributes and node.attributes["src"].value == "./pyscript/core.js":
     head.removeChild(node)
-body = html.childNodes[3]
-board_div = body.childNodes[1]
-script_node = body.childNodes[5]
+body = html.childNodes[1]
+board_div = body.childNodes[0]
+script_node = body.childNodes[2]
 body.removeChild(script_node) # Remove the pyscript call
 
 def append_canvas():
@@ -38,6 +40,8 @@ main_obj = Main(document, append_canvas, append_text)
 main_obj.main()
 
 with open("output.html", mode="w", encoding="utf-8") as output:
-  output.write(document.toprettyxml())
+  pretty_output = document.toprettyxml()
+  pretty_output = pretty_output.removeprefix('<?xml version="1.0" ?>\n')
+  output.write(pretty_output)
 
 # TODO: somehow automatically open and/or refresh the file? opening it is still a bit of a hassle
