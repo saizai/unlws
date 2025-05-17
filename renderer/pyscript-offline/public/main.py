@@ -72,7 +72,7 @@ class Main():
 
     comment = ""
     comment += f"{description}:\n"
-    comment += f"BP positions: {[[(subsection.bp(bp_name).x, subsection.bp(bp_name).y) for bp_name in subsection.lemma_bps] for subsection in text.subsections]}."
+    comment += f"BP positions: {[[[(round(subsection.subsections[0].bp(bp_name).x, 2), round(subsection.subsections[0].bp(bp_name).y, 2)) for bp_name in subsection.subsections[0].lemma_bps]] for subsection in text.subsections]}."
 
     self.append_text(canvas.parent, comment)
 
@@ -86,8 +86,9 @@ class Main():
 
   def main(self):
     for i in range(4):
-      text = self.make_test_text(angle_offset=i*math.pi/6, name = "initial")
-      self.render_with_comments(text, "Initial", draw_bboxes=True)
+      degrees = i*30
+      text = self.make_test_text(angle_offset=degrees*math.pi/180, name = "initial")
+      self.render_with_comments(text, f"θ = {degrees}°", draw_bboxes=True)
 
     # text = make_test_text(math.pi/6, name = "initial")
     # render_relaxation_steps(text, "Simple text", stepcount_per_iteration=30, iteration_count=3)
