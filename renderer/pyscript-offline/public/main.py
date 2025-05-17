@@ -5,14 +5,20 @@ from relLine import RelLine
 import relaxer
 
 class Main():
-  def __init__(self, document, append_canvas, append_text):
+  def __init__(self, document):
     self.document = document
     self.body = self.document.body
-    self.append_canvas = append_canvas
-    self.append_text = append_text
 
     self.dictionary = SingleSVGGlyphDictionary('unlws_glyphs/glyphs.svg')
 
+  def append_canvas(self):
+    """Append a Canvas to body and return it."""
+    raise NotImplementedError()
+  
+  def append_text(self, container, text):
+    """Add `text` to `container` (an element in `document`) as a <p> node.
+    Newlines can be made with `\\n`."""
+    raise NotImplementedError()
 
   def make_test_text(self, I_angle_offset = 0, distance_multiplier = 1):
     text = EmicText()

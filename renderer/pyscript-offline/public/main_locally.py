@@ -18,16 +18,22 @@ board_div = body.childNodes[0]
 script_node = body.childNodes[2]
 body.removeChild(script_node) # Remove the pyscript call
 
-def append_canvas():
-  sub_board = document.createElement("div")
-  board_div.appendChild(sub_board)
-  canvas = XMLCanvas(sub_board)
-  canvas.parent = sub_board
-  return canvas
+# Create a subclass with the necessary methods for using Main locally
+class Main_Locally(Main):
+  def append_canvas(self):
+    sub_board = document.createElement("div")
+    board_div.appendChild(sub_board)
+    canvas = XMLCanvas(sub_board)
+    canvas.parent = sub_board
+    return canvas
 
-def append_text(container, text):
-  node = document.createTextNode(text)
-  container.appendChild(node)
+  def append_text(self, container, text):
+    p = document.createElement("p")
+    container.appendChild(p)
+    for line in text.split("\n"):
+      p.appendChild(document.createTextNode(line))
+      p.appendChild(document.createElement("br"))
+    return p
 
 
 # Adding properties to make the minidom objects behave more like HTML DOM objects.
@@ -35,9 +41,9 @@ def append_text(container, text):
 document.body = body
 
 
-main_obj = Main(document, append_canvas, append_text)
+main_obj = Main_Locally(document)
 
-main_obj.main()
+main_obj.main() # Finally call the main method
 
 with open("output.html", mode="w", encoding="utf-8") as output:
   pretty_output = document.toprettyxml()
