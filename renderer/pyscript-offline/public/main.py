@@ -59,11 +59,11 @@ class Main():
     canvas = self.append_canvas()
     canvas.render(text)
 
-    comment = f"{description}:<br>"
-    comment += f"Curvature penalty: { relaxer.total_penalty(text, {"velocity": 0, "curvature": 1, "distance": 0})}.<br>"
-    comment += f"Curvature squared penalty: { relaxer.total_penalty(text, {"velocity": 0, "curvature": 0, "distance": 0, "curvature_squared": 1})}.<br>"
-    comment += f"Curvature penalty for top rel: { relaxer.curvature_penalty(text.rels[0])}.<br>"
-    comment += f"Curvature penalty for bottom rel: { relaxer.curvature_penalty(text.rels[1])}.<br>"
+    comment = f"{description}:\n"
+    comment += f"Curvature penalty: { relaxer.total_penalty(text, {"velocity": 0, "curvature": 1, "distance": 0})}.\n"
+    comment += f"Curvature squared penalty: { relaxer.total_penalty(text, {"velocity": 0, "curvature": 0, "distance": 0, "curvature_squared": 1})}.\n"
+    comment += f"Curvature penalty for top rel: { relaxer.curvature_penalty(text.rels[0])}.\n"
+    comment += f"Curvature penalty for bottom rel: { relaxer.curvature_penalty(text.rels[1])}."
 
     self.append_text(canvas.parent, comment)
 
