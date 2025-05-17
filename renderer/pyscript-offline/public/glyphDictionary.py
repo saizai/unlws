@@ -1,6 +1,7 @@
 from copy import deepcopy
 import math
 import xml.dom.minidom as minidom
+from minidom_extras import remove_whitespace_nodes
 import svgpathtools
 from bindingPoint import BindingPoint
 from glyph import Glyph, snap_to_end
@@ -19,6 +20,10 @@ class SingleSVGGlyphDictionary(GlyphDictionary):
   
   def __init__(self, filename):
     self.dictionary = minidom.parse(filename)
+    # Removing whitespace nodes allows .toprettyxml() to work properly on minidom Nodes
+    # FIXME: style tags are still out of line
+    remove_whitespace_nodes(self.dictionary)
+    
     # There might be other g elements, but this should include all glyphs:
     self.glyphs = self.dictionary.getElementsByTagName("g")
     

@@ -280,3 +280,7 @@ RewriteRule ^UB61$ https://drive.google.com/uc?id=1G0w11tj3hxX1JmePx3RV-9uwIqr8Z
 RewriteRule ^UB62$ https://drive.google.com/uc?id=1G6C0u2E7PieXxy52JX5AekffGiFBhD6H [L,R=302,NC]
 RewriteRule ^UB63$ https://drive.google.com/uc?id=1G78tB56lFQ-f_ZLkhmFzCoe0RXyNMRm6 [L,R=302,NC]
 RewriteRule ^UB64$ https://drive.google.com/uc?id=1If4kionmdhxNCuOlA9SWDOzfVjpXr86m [L,R=302,NC]
+RewriteRule ^UB65$ https://drive.google.com/uc?id=1ZVcCxRLRggG-0wug6EP5IPuQJMh2m5A0 [L,R=302,NC]
+RewriteRule ^UB66$ https://drive.google.com/uc?id=1ZY8vr32RWUyIFH2-4w-657tEpm1rNaLi [L,R=302,NC]
+RewriteRule ^UB67$ https://drive.google.com/uc?id=1ZdijXvKTYL5lPdHjtXJPpHhl-TIQN6s- [L,R=302,NC]
+RewriteRule ^UB68$ https://drive.google.com/uc?id=1ZaImslyLQLDvQt1Mz0xyrBlGu8b6OcwW [L,R=302,NC]

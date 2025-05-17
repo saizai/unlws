@@ -9,6 +9,7 @@
     "./glyph.py": "",
     "./glyphDictionary.py": "",
     "./main.py": "",
+    "./minidom_extras.py": "",
     "./relaxer.py": "",
     "./relLine.py": "",
     "./unlws_glyphs/glyphs.svg": "./unlws_glyphs/glyphs.svg"
