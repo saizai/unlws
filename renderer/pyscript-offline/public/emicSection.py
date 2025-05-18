@@ -60,9 +60,12 @@ class EmicSection(BPHaver):
     return float(css[span[0]:span[1]])
 
 
-  def add_subsection(self, subsec):
+  def add_subsection(self, subsec, bp_renaming=None):
     "Add the EmicSection subsec to this section's list of subsections."
     self.subsections.append(subsec)
+    # TODO: implement bp_renaming to mark what BPs this section should pass forward from its subsections.
+    # Default (==None?) would be for this section to have all BPs that any subsections have, and to use the same names for them. But it should be possible to only pass some of the BPs and to rename them.
+    # For example, `bp_renaming = {"X": "A", "Y": ""}` would mean that this section gets two new BPs (A and Y) which correspond to `subsec`'s BPs (X and Y respectively). Any other BPs of `subsec` are not passed along. `bp_renaming = {}` would mean no BPs are passed along.
   
   def add_rel(self, rel):
     self.rels.append(rel)

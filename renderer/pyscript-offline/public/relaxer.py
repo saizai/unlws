@@ -65,9 +65,9 @@ class DifferentialSection(EmicSection):
       ds = DifferentialSectionFromEmic(s)
       return ds
   
-  def add_subsection(self, subsec):
+  def add_subsection(self, subsec, bp_renaming=None):
     diffsubsec = DifferentialSection.from_emic_section(subsec)
-    return super().add_subsection(diffsubsec)
+    return super().add_subsection(diffsubsec, bp_renaming)
 
   @property
   def dangle_in_degrees(self):
