@@ -32,7 +32,7 @@ class RelLine:
   
   
   def svg_bounding_box(self, color = "red"):
-    """Return a <rect> element that bounds this section."""
+    """Return a `<rect>` element that bounds this section."""
     svg = minidom.getDOMImplementation().createDocument("http://www.w3.org/2000/svg", "svg", None)
     # bbox = self.bounding_box(stroke_width_allowance=self.default_stroke_width) # TODO: what is the stroke width?
     bbox = self.bounding_box()

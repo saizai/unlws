@@ -152,7 +152,7 @@ class EmicSection(BPHaver):
   
 
   def svg_bounding_box(self, color = "red", own_coords = False):
-    # """Return a <rect> element that bounds this section."""
+    # """Return a `<rect>` element that bounds this section."""
     # svg = minidom.getDOMImplementation().createDocument("http://www.w3.org/2000/svg", "svg", None)
     # bbox = self.bounding_box(stroke_width_allowance=self.default_stroke_width)
     # r = svg.createElement("rect")
@@ -164,7 +164,7 @@ class EmicSection(BPHaver):
     # r.setAttribute("stroke", color)
     # r.setAttribute("stroke-width", str(1./36))
     # return r
-    """Return a <circle> element that bounds this section."""
+    """Return a `<circle>` element that bounds this section."""
     svg = minidom.getDOMImplementation().createDocument("http://www.w3.org/2000/svg", "svg", None)
     c = svg.createElement("circle")
     c.setAttribute("cx", str(self.x))
@@ -176,7 +176,7 @@ class EmicSection(BPHaver):
     return c
 
   def svg(self, draw_bboxes = False, drawBPs = False):
-    """Return this section as an XML <g> element."""
+    """Return this section as an XML `<g>` element."""
     document = minidom.getDOMImplementation().createDocument("http://www.w3.org/2000/svg", "svg", None)
     g = document.createElement("g")
     if self.color:

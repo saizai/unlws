@@ -17,7 +17,7 @@ class Main():
     raise NotImplementedError()
   
   def append_text(self, container, text):
-    """Add `text` to `container` (an element in `document`) as a <p> node.
+    """Add `text` to `container` (an element in `document`) as a `<p>` node.
     Newlines can be made with `\\n`."""
     raise NotImplementedError()
 
