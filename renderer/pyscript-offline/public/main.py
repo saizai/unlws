@@ -24,7 +24,7 @@ class Main():
   def make_test_text(self, angle_offset = 0, distance_multiplier = 1, name = "test text"):
     text = EmicSection(dictionary = self.dictionary, name = name)
 
-    text.angle = math.pi/3 + angle_offset # FIXME: the cat end of the rel responds doubly to this changing.
+    text.angle = math.pi/3
 
     firstsg = self.dictionary.glyph_by_id("I")
     firstsg = relaxer.DifferentialSection.from_emic_section(firstsg)
@@ -37,18 +37,20 @@ class Main():
 
     cat = self.dictionary.glyph_by_id("cat")
     cat = relaxer.DifferentialSection.from_emic_section(cat)
-    cat.x = 2. * distance_multiplier
-    cat.y = 0.
+    cat.y = 0.5
     cat.angle = math.pi
     cat_sec = relaxer.DifferentialSection(self.dictionary, "cat wrapper")
+    cat_sec.x = 2. * distance_multiplier
+    cat_sec.y = -0.5
     cat_sec.add_subsection(cat)
-    cat_sec.angle = math.pi/6 # FIXME: the rel should respond to this changing, but doesn't.
+    cat_sec.angle = math.pi/6 + angle_offset
     text.add_subsection(cat_sec)
     
+    # TODO: I need to make the BPs get passed along automatically, and then I need to remove this manually created RelativeBindingPoint
     cat_relative_bp = RelativeBindingPoint(cat, "X")
-    text.addBP("cat bp", cat_relative_bp)
+    cat_sec.addBP("cat bp", cat_relative_bp)
     
-    rel = RelLine(firstsg, "X", text, "cat bp")
+    rel = RelLine(firstsg, "X", cat_sec, "cat bp")
     text.add_rel(rel)
 
     # cat2 = dictionary.glyph_by_id("cat", name = "cat2")
@@ -72,7 +74,9 @@ class Main():
 
     comment = ""
     comment += f"{description}:\n"
-    comment += f"BP positions: {[[[(round(subsection.subsections[0].bp(bp_name).x, 2), round(subsection.subsections[0].bp(bp_name).y, 2)) for bp_name in subsection.subsections[0].lemma_bps]] for subsection in text.subsections]}."
+    comment += f"BP positions: {[[[(round(subsection.subsections[0].bp(bp_name).x, 2), round(subsection.subsections[0].bp(bp_name).y, 2)) for bp_name in subsection.subsections[0].lemma_bps]] for subsection in text.subsections]};\n"
+
+    comment += f"subs: {text.subsections};\n"
 
     self.append_text(canvas.parent, comment)
 
