@@ -60,7 +60,12 @@ class BindingPoint:
 
 
 class RelativeBindingPoint(BindingPoint):
-  """A simulation of a BP. It gives the coordinates as if the BP was a BP of `sub_host`'s sibling, when it is actually a BP of sub_host."""
+  """A simulation of a BP. It gives the coordinates as if the BP was a BP of `sub_host`'s parent, when it is actually a BP of `sub_host`.
+  
+  `__init__` arguments:
+   * `sub_host`: the section to which the real BP belongs;
+   * `sub_bp_name`: the name of the BP in the host."""
+
   def __init__(self, sub_host, sub_bp_name):
     self.sub_bp_name = sub_bp_name
     self.sub_host = sub_host
@@ -68,7 +73,7 @@ class RelativeBindingPoint(BindingPoint):
   @property
   def sub_bp(self):
     return self.sub_host.bp(self.sub_bp_name)
-  
+
   @property
   def x(self):
     return self.sub_bp.x
@@ -80,8 +85,9 @@ class RelativeBindingPoint(BindingPoint):
     return self.sub_bp.handlex
   @property
   def handley(self):
-    return self.sub_bp.handley
-  
+    return self.sub_bp.handley  
+
+  # NOTE: at time of writing these are unused, so they probably haven't been tested  
   def set_position(self, x, y):
     self.x, self.y = self.sub_host.parent_coords_to_own(x, y)
   def set_handles(self, handlex, handley):
