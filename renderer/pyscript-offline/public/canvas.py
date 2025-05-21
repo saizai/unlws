@@ -3,7 +3,7 @@ class Canvas:
   
   Do not confuse with the HTML canvas element (which we do not expect to use.)"""
   
-  def render(self, emicsection):
+  def render(self, emicsection, **kwargs):
     """Draw the EmicSection emicsection to this canvas."""
     raise NotImplementedError
 
@@ -14,8 +14,8 @@ class HTMLDOMCanvas(Canvas):
     # element should be a JsProxy
     self.element = element
   
-  def render(self, emicsection, draw_bboxes = False):
-    self.element.innerHTML = emicsection.svg_document(draw_bboxes = draw_bboxes).toxml()
+  def render(self, emicsection, **kwargs):
+    self.element.innerHTML = emicsection.svg_document(**kwargs).toxml()
 
 class XMLCanvas(Canvas):
   """Creates an XML element as a Canvas, which we write an SVG inside."""
@@ -24,6 +24,6 @@ class XMLCanvas(Canvas):
     # element should be an XML minidom element
     self.element = element
   
-  def render(self, emicsection, draw_bboxes = False):
+  def render(self, emicsection, **kwargs):
     # FIXME: replace instead of appending
-    self.element.appendChild(emicsection.svg_document(draw_bboxes = draw_bboxes).childNodes[0])
+    self.element.appendChild(emicsection.svg_document(**kwargs).childNodes[0])

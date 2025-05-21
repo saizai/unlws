@@ -66,9 +66,9 @@ class Main():
     
     return text
 
-  def render_with_comments(self, text, description, draw_bboxes = False):
+  def render_with_comments(self, text, description, draw_extras = False):
     canvas = self.append_canvas()
-    canvas.render(text, draw_bboxes = draw_bboxes)
+    canvas.render(text, draw_bboxes=draw_extras, draw_BPs=draw_extras)
 
     comment = ""
     comment += f"{description}:\n"
@@ -77,10 +77,10 @@ class Main():
     self.append_text(canvas.parent, comment)
 
   def render_relaxation_steps(self, text, name, penalty_coefficients={}, stepcount_per_iteration=50, iteration_count=4):
-    self.render_with_comments(text, f"{name} initial", draw_bboxes=True)
+    self.render_with_comments(text, f"{name} initial", draw_extras=True)
     for i in range(iteration_count):
       relaxer.relax(text, step_count=stepcount_per_iteration, penalty_coefficients=penalty_coefficients)
-      self.render_with_comments(text, f"{name} after {stepcount_per_iteration*(i+1)} steps", draw_bboxes=True)
+      self.render_with_comments(text, f"{name} after {stepcount_per_iteration*(i+1)} steps", draw_extras=True)
 
 
 
@@ -88,7 +88,7 @@ class Main():
     for i in range(4):
       degrees = i*30
       text = self.make_test_text(angle_offset=degrees*math.pi/180, name = "initial")
-      self.render_with_comments(text, f"θ = {degrees}°", draw_bboxes=True)
+      self.render_with_comments(text, f"θ = {degrees}°", draw_extras=True)
 
     # text = make_test_text(math.pi/6, name = "initial")
     # render_relaxation_steps(text, "Simple text", stepcount_per_iteration=30, iteration_count=3)

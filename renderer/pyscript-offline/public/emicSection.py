@@ -175,8 +175,12 @@ class EmicSection(BPHaver):
     c.setAttribute("stroke-width", str(1./36))
     return c
 
-  def svg(self, draw_bboxes = False, drawBPs = False):
-    """Return this section as an XML `<g>` element."""
+  def svg(self, **kwargs):
+    """Return this section as an XML `<g>` element.
+    
+    kwargs:
+    * if `draw_BPs` is true, draw the BPs as green circles;
+    * if `draw_bboxes` is true, draw rectangles around rel lines and circles around sections."""
     document = minidom.getDOMImplementation().createDocument("http://www.w3.org/2000/svg", "svg", None)
     g = document.createElement("g")
     if self.color:
@@ -184,16 +188,16 @@ class EmicSection(BPHaver):
     g.setAttribute("transform", f"translate({self.x} {self.y}) rotate({self.angle_in_degrees})")
           
     for subsection in self.subsections:
-      if draw_bboxes:
+      if kwargs.get("draw_bboxes", False):
         r = subsection.svg_bounding_box()
         g.appendChild(r)
 
-      el = subsection.svg(draw_bboxes = draw_bboxes, drawBPs = drawBPs)
+      el = subsection.svg(**kwargs)
       # el.setAttribute("class", self.text_class)
       g.appendChild(el)
     
     for rel in self.rels:
-      if draw_bboxes:
+      if kwargs.get("draw_bboxes", False):
         r = rel.svg_bounding_box(color = "green")
         g.appendChild(r)
       
@@ -203,8 +207,12 @@ class EmicSection(BPHaver):
     
     return g
 
-  def svg_document(self, draw_bboxes = False):
-    """Return an SVG of this section as XML."""
+  def svg_document(self, **kwargs):
+    """Return an SVG of this section as XML.
+    
+    kwargs:
+    * if `draw_BPs` is true, draw the BPs as green circles;
+    * if `draw_bboxes` is true, draw rectangles around rel lines and circles around sections."""
     svg = minidom.getDOMImplementation().createDocument("http://www.w3.org/2000/svg", "svg", None)
     document = svg.documentElement
     
@@ -217,7 +225,7 @@ class EmicSection(BPHaver):
 
     document.appendChild(self.style)
     
-    contents = self.svg(draw_bboxes = draw_bboxes)
+    contents = self.svg(**kwargs)
     contents.setAttribute("class", self.text_class)
     document.appendChild(contents)
     
@@ -243,14 +251,15 @@ class SingleGlyphEmicSection(EmicSection):
     return self.glyph.lemma_svg
     # TODO: this method may be unnecessary and confusing
 
-  def svg(self, draw_bboxes = False, drawBPs = False):
+  def svg(self, **kwargs):
     """Return a rendered SVG, with the correct coordinate transform.
     
-    If `drawBPs` is true, draw the BPs as green circles."""
+    kwargs:
+    * if `draw_BPs` is true, draw the BPs as green circles."""
     surface_svg = deepcopy(self.lemma_svg)
     surface_svg.setAttribute("transform", f"translate({self.x} {self.y}) rotate({self.angle_in_degrees})")
     
-    if drawBPs:
+    if kwargs.get("draw_BPs", False):
       # Again create a document, urgh.
       document = minidom.getDOMImplementation().createDocument("http://www.w3.org/2000/svg", "svg", None)
       for bp in self._lemma_bps.values():
