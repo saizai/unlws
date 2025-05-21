@@ -175,6 +175,36 @@ class EmicSection(BPHaver):
     c.setAttribute("stroke-width", str(1./36))
     return c
 
+  def _append_BPs_to(self, container, **kwargs):
+    """Adds this EmicSection's BPs to the minidom SVG called `container`. `container` is modified using `.appendChild`."""
+
+    draw_BPs = kwargs.get("draw_BPs", False)
+    if not draw_BPs:
+      return
+
+    BP_color = kwargs.get("BP_color", "#6aa84f80")
+    # Again create a document, urgh.
+    document = minidom.getDOMImplementation().createDocument("http://www.w3.org/2000/svg", "svg", None)
+    for bp in self._lemma_bps.values():
+      dot = document.createElement("circle")
+      dot.setAttribute("cx", str(bp.x))
+      dot.setAttribute("cy", str(bp.y))
+      dot.setAttribute("r", str(1./6)) # magic width based on default stroke width
+      dot.setAttribute("fill", BP_color)
+      dot.setAttribute("stroke", "none")
+      container.appendChild(dot)
+      # The end of a stubby line for the handle. Again the length 1/3 is magic.
+      endx = (2*bp.x + bp.handlex)/3
+      endy = (2*bp.y + bp.handley)/3
+      stub = document.createElement("line")
+      stub.setAttribute("x1", str(bp.x))
+      stub.setAttribute("y1", str(bp.y))
+      stub.setAttribute("x2", str(endx))
+      stub.setAttribute("y2", str(endy))
+      stub.setAttribute("stroke", BP_color)
+      stub.setAttribute("stroke-width", str(1./12)) # like the dictionary's style
+      container.appendChild(stub)
+
   def svg(self, **kwargs):
     """Return this section as an XML `<g>` element.
     
@@ -204,6 +234,8 @@ class EmicSection(BPHaver):
       el = rel.svg()
       # el.setAttribute("class", self.text_class)
       g.appendChild(el)
+    
+    self._append_BPs_to(g, **kwargs)
     
     return g
 
@@ -259,28 +291,7 @@ class SingleGlyphEmicSection(EmicSection):
     surface_svg = deepcopy(self.lemma_svg)
     surface_svg.setAttribute("transform", f"translate({self.x} {self.y}) rotate({self.angle_in_degrees})")
     
-    if kwargs.get("draw_BPs", False):
-      # Again create a document, urgh.
-      document = minidom.getDOMImplementation().createDocument("http://www.w3.org/2000/svg", "svg", None)
-      for bp in self._lemma_bps.values():
-        dot = document.createElement("circle")
-        dot.setAttribute("cx", str(bp.x))
-        dot.setAttribute("cy", str(bp.y))
-        dot.setAttribute("r", str(1./6)) # magic width based on default stroke width
-        dot.setAttribute("fill", "#6aa84f")
-        dot.setAttribute("stroke", "none")
-        surface_svg.appendChild(dot)
-        # The end of a stubby line for the handle. Again the length 1/3 is magic.
-        endx = (2*bp.x + bp.handlex)/3
-        endy = (2*bp.y + bp.handley)/3
-        stub = document.createElement("line")
-        stub.setAttribute("x1", str(bp.x))
-        stub.setAttribute("y1", str(bp.y))
-        stub.setAttribute("x2", str(endx))
-        stub.setAttribute("y2", str(endy))
-        stub.setAttribute("stroke", "#6aa84f")
-        stub.setAttribute("stroke-width", str(1./12)) # like the dictionary's style
-        surface_svg.appendChild(stub)
+    self._append_BPs_to(surface_svg, **kwargs)
     
     return surface_svg
   
