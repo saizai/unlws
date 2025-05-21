@@ -83,6 +83,15 @@ class EmicSection(BPHaver):
     ynew = s*xnew + c*ynew
     return xnew, ynew
   
+  def own_coords_to_parent(self, x, y):
+    """Return (x, y) from this BPHaver's coordinate system transformed to that of its parent."""
+    # NOTE: untested
+    c, s = math.cos(self.angle), math.sin(self.angle)
+    xnew = c*x - s*y
+    ynew = s*x + c*y
+    xnew, ynew = xnew+self.x, ynew+self.y
+    return xnew, ynew
+  
   
   # def svgpathtools_paths(self):
   #   """Return a list of svgpathtools Path objects represented by this section.
