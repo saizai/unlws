@@ -4,6 +4,7 @@ import math
 import xml.dom.minidom as minidom
 import svgpathtools
 from BPHaver import BPHaver
+from bindingPoint import RelativeBindingPoint
 
 class EmicSection(BPHaver):
   """An UNLWS sentence, with the layout of how it sits on the page, containing subsections and rels between them."""
@@ -61,11 +62,27 @@ class EmicSection(BPHaver):
 
 
   def add_subsection(self, subsec, bp_renaming=None):
-    "Add the EmicSection subsec to this section's list of subsections."
+    """Add the EmicSection subsec to this section's list of subsections.
+    
+    `bp_renaming`:
+
+    For example, `bp_renaming = {"X": "A", "Y": ""}` means that this section gets two new BPs (A and Y) which correspond to `subsec`'s BPs (X and Y respectively). Any other BPs of `subsec` are not passed along. `bp_renaming = {}` means no BPs are passed along.
+
+    The default (`None`) means that this section has all BPs that `subsec` has, and uses the same names for them."""
     self.subsections.append(subsec)
-    # TODO: implement bp_renaming to mark what BPs this section should pass forward from its subsections.
-    # Default (==None?) would be for this section to have all BPs that any subsections have, and to use the same names for them. But it should be possible to only pass some of the BPs and to rename them.
-    # For example, `bp_renaming = {"X": "A", "Y": ""}` would mean that this section gets two new BPs (A and Y) which correspond to `subsec`'s BPs (X and Y respectively). Any other BPs of `subsec` are not passed along. `bp_renaming = {}` would mean no BPs are passed along.
+
+    for bp_name in subsec.lemma_bps:
+      if bp_renaming is None:
+        new_name = bp_name
+      elif bp_name in bp_renaming:
+        new_name = bp_renaming[bp_name]
+        if new_name == "":
+          new_name = bp_name
+      else:
+        continue
+      assert new_name not in self.lemma_bps
+      relative_bp = RelativeBindingPoint(subsec, bp_name)
+      self.addBP(new_name, relative_bp)
   
   def add_rel(self, rel):
     self.rels.append(rel)

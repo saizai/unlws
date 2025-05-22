@@ -44,13 +44,9 @@ class Main():
     cat_sec.y = -0.5
     cat_sec.add_subsection(cat)
     cat_sec.angle = math.pi/6 + angle_offset
-    text.add_subsection(cat_sec)
+    text.add_subsection(cat_sec, {})
     
-    # TODO: I need to make the BPs get passed along automatically, and then I need to remove this manually created RelativeBindingPoint
-    cat_relative_bp = RelativeBindingPoint(cat, "X")
-    cat_sec.addBP("cat bp", cat_relative_bp)
-    
-    rel = RelLine(firstsg, "X", cat_sec, "cat bp")
+    rel = RelLine(firstsg_sec, "X", cat_sec, "X")
     text.add_rel(rel)
 
     # cat2 = dictionary.glyph_by_id("cat", name = "cat2")
