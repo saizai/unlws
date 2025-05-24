@@ -21,32 +21,55 @@ class Main():
     Newlines can be made with `\\n`."""
     raise NotImplementedError()
 
+  def make_tree(self, num_levels, name):
+    if num_levels == 0:
+      cat = self.dictionary.glyph_by_id("cat")
+      cat = relaxer.DifferentialSection.from_emic_section(cat)
+      cat.angle = math.pi
+      return cat
+
+    text = relaxer.DifferentialSection(dictionary = self.dictionary, name = name)
+
+    junction = self.dictionary.glyph_by_id("junction-TEMPORARY")
+    junction = relaxer.DifferentialSection.from_emic_section(junction)
+    text.add_subsection(junction, {"X2": "X"})
+    junction.x = -1
+    junction.angle = math.pi/3
+    
+    sub_text_1 = self.make_tree(num_levels-1, name+" 1")
+    sub_text_2 = self.make_tree(num_levels-1, name+" 2")
+    text.add_subsection(sub_text_1, {})
+    text.add_subsection(sub_text_2, {})
+    sub_text_1.x = 2
+    sub_text_1.y = 2**num_levels/2
+    sub_text_2.x = 2
+    sub_text_2.y = -2**num_levels/2
+
+
+    rel = RelLine(sub_text_1, "X", junction, "X1")
+    text.add_rel(rel)
+    rel = RelLine(sub_text_2, "X", junction, "X3")
+    text.add_rel(rel)
+
+    return text
+
   def make_test_text(self, angle_offset = 0, distance_multiplier = 1, name = "test text"):
     text = EmicSection(dictionary = self.dictionary, name = name)
 
-    text.angle = math.pi/3
+    text.angle = math.pi/2
 
     firstsg = self.dictionary.glyph_by_id("I")
     firstsg = relaxer.DifferentialSection.from_emic_section(firstsg)
-    firstsg.x = -2. * distance_multiplier
     firstsg.y = 0.
+    firstsg.x = -3. * distance_multiplier
     firstsg.angle = -math.pi/2#math.pi/6#-math.pi/2
-    firstsg_sec = relaxer.DifferentialSection(self.dictionary, "I wrapper")
-    firstsg_sec.add_subsection(firstsg)
-    text.add_subsection(firstsg_sec)
+    text.add_subsection(firstsg)
 
-    cat = self.dictionary.glyph_by_id("cat")
-    cat = relaxer.DifferentialSection.from_emic_section(cat)
-    cat.y = 0.5
-    cat.angle = math.pi
-    cat_sec = relaxer.DifferentialSection(self.dictionary, "cat wrapper")
-    cat_sec.x = 2. * distance_multiplier
-    cat_sec.y = -0.5
-    cat_sec.add_subsection(cat)
-    cat_sec.angle = math.pi/6 + angle_offset
-    text.add_subsection(cat_sec, {})
+    tree = self.make_tree(3, "tree")
+    tree = relaxer.DifferentialSection.from_emic_section(tree)
+    text.add_subsection(tree, {})
     
-    rel = RelLine(firstsg_sec, "X", cat_sec, "X")
+    rel = RelLine(firstsg, "X", tree, "X")
     text.add_rel(rel)
 
     # cat2 = dictionary.glyph_by_id("cat", name = "cat2")
@@ -70,9 +93,6 @@ class Main():
 
     comment = ""
     comment += f"{description}:\n"
-    comment += f"BP positions: {[[[(round(subsection.subsections[0].bp(bp_name).x, 2), round(subsection.subsections[0].bp(bp_name).y, 2)) for bp_name in subsection.subsections[0].lemma_bps]] for subsection in text.subsections]};\n"
-
-    comment += f"subs: {text.subsections};\n"
 
     self.append_text(canvas.parent, comment)
 
@@ -85,13 +105,13 @@ class Main():
 
 
   def main(self):
-    for i in range(4):
-      degrees = i*30
-      text = self.make_test_text(angle_offset=degrees*math.pi/180, name = "initial")
-      self.render_with_comments(text, f"θ = {degrees}°", draw_extras=True)
+    # for i in range(4):
+    #   degrees = i*30
+    #   text = self.make_test_text(angle_offset=degrees*math.pi/180, name = "initial")
+    #   self.render_with_comments(text, f"θ = {degrees}°", draw_extras=True)
 
-    # text = make_test_text(math.pi/6, name = "initial")
-    # render_relaxation_steps(text, "Simple text", stepcount_per_iteration=30, iteration_count=3)
+    text = self.make_test_text(name = "initial")
+    self.render_relaxation_steps(text, "Tree", stepcount_per_iteration=5, iteration_count=3)
 
 
     # subtext_1 = make_test_text(math.pi/6, name = "velocity relaxed")
