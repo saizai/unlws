@@ -24,5 +24,13 @@
    <unlws-renderer:bp name="C" x="0.25" y="-0.25" angle="-45"/>
    <unlws-renderer:bp name="S" x="-0.5" y="-1" angle="-90"/>
   </g>
+  <!-- This glyph is a temporary way to connect many glyphs. TODO: Remove this once something more flexible is implemented. -->
+  <g id="junction-TEMPORARY">
+   <!-- FIXME: If no lines are drawn, the bounding disk getter gives an error about how it tries to take the minimum of 0 elements. Where exactly should I fix this so that I don't cause errors that are hard to find? -->
+   <path d="M0 0L0.01 0.01"></path>
+   <unlws-renderer:bp name="X1" x="0" y="0" angle="0"/>
+   <unlws-renderer:bp name="X2" x="0" y="0" angle="120"/>
+   <unlws-renderer:bp name="X3" x="0" y="0" angle="240"/>
+  </g>
  </defs>
 </svg>
