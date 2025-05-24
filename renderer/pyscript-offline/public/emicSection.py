@@ -236,7 +236,8 @@ class EmicSection(BPHaver):
     
     kwargs:
     * if `draw_BPs` is true, draw the BPs as green circles;
-    * if `draw_bboxes` is true, draw rectangles around rel lines and circles around sections."""
+    * if `draw_bounding_disks` is true, draw circles around sections;
+    * if `draw_rel_bboxes` is true, draw rectangles around rel lines."""
     document = minidom.getDOMImplementation().createDocument("http://www.w3.org/2000/svg", "svg", None)
     g = document.createElement("g")
     if self.color:
@@ -244,7 +245,7 @@ class EmicSection(BPHaver):
     g.setAttribute("transform", f"translate({self.x} {self.y}) rotate({self.angle_in_degrees})")
           
     for subsection in self.subsections:
-      if kwargs.get("draw_bboxes", False):
+      if kwargs.get("draw_bounding_disks", False):
         r = subsection.svg_bounding_box()
         g.appendChild(r)
 
@@ -253,7 +254,7 @@ class EmicSection(BPHaver):
       g.appendChild(el)
     
     for rel in self.rels:
-      if kwargs.get("draw_bboxes", False):
+      if kwargs.get("draw_rel_bboxes", False):
         r = rel.svg_bounding_box(color = "green")
         g.appendChild(r)
       
@@ -270,7 +271,8 @@ class EmicSection(BPHaver):
     
     kwargs:
     * if `draw_BPs` is true, draw the BPs as green circles;
-    * if `draw_bboxes` is true, draw rectangles around rel lines and circles around sections."""
+    * if `draw_bounding_disks` is true, draw circles around sections;
+    * if `draw_rel_bboxes` is true, draw rectangles around rel lines."""
     svg = minidom.getDOMImplementation().createDocument("http://www.w3.org/2000/svg", "svg", None)
     document = svg.documentElement
     
