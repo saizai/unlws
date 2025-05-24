@@ -52,7 +52,8 @@ class SingleSVGGlyphDictionary(GlyphDictionary):
     path_list = glyph.svgpathtools_paths()
     
     # Unpack the properties in the unlws-renderer namespace.
-    for child in g_elt.childNodes:
+    g_elt_children = g_elt.childNodes.copy() # Needed so that removing children from g_elt doesn't skip elements in the loop. TODO: cleaner solution?
+    for child in g_elt_children:
       if child.nodeType == child.ELEMENT_NODE and child.tagName == "unlws-renderer:bp":
         # Normally a line from a BP continues in the direction of a stroke
         # within the glyph. So if no angle is specified, try to infer it
