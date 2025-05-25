@@ -21,17 +21,22 @@ class Main():
     Newlines can be made with `\\n`."""
     raise NotImplementedError()
 
+  def glyph_by_id(self, id):
+    """Create a DifferentialSection given the id of a glyph in the dictionary."""
+    glyph = self.dictionary.glyph_by_id(id)
+    glyph = relaxer.DifferentialSection.from_emic_section(glyph)
+    return glyph
+
+
   def make_tree(self, num_levels, name):
     if num_levels == 0:
-      cat = self.dictionary.glyph_by_id("cat")
-      cat = relaxer.DifferentialSection.from_emic_section(cat)
+      cat = self.glyph_by_id("cat")
       cat.angle = math.pi
       return cat
 
     text = relaxer.DifferentialSection(dictionary = self.dictionary, name = name)
 
-    junction = self.dictionary.glyph_by_id("junction-TEMPORARY")
-    junction = relaxer.DifferentialSection.from_emic_section(junction)
+    junction = self.glyph_by_id("junction-TEMPORARY")
     text.add_subsection(junction, {"X2": "X"})
     junction.x = -1
     junction.angle = math.pi/3
@@ -58,22 +63,19 @@ class Main():
 
     text.angle = math.pi/2
 
-    firstsg = self.dictionary.glyph_by_id("I")
-    firstsg = relaxer.DifferentialSection.from_emic_section(firstsg)
+    firstsg = self.glyph_by_id("I")
     firstsg.y = 0.
     firstsg.x = -3. * distance_multiplier
     firstsg.angle = -math.pi/2#math.pi/6#-math.pi/2
     text.add_subsection(firstsg)
 
     tree = self.make_tree(3, "tree")
-    tree = relaxer.DifferentialSection.from_emic_section(tree)
     text.add_subsection(tree, {})
     
     rel = RelLine(firstsg, "X", tree, "X")
     text.add_rel(rel)
 
-    # cat2 = dictionary.glyph_by_id("cat", name = "cat2")
-    # cat2 = relaxer.DifferentialSection.from_emic_section(cat2)
+    # cat2 = self.glyph_by_id("cat", name = "cat2")
     # cat2.x = 2. * distance_multiplier
     # cat2.y = 1.
     # cat2.angle = math.pi
