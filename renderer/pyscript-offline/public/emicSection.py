@@ -201,8 +201,10 @@ class EmicSection(BPHaver):
     c.setAttribute("stroke-width", str(1./36))
     return c
 
-  def _append_BPs_to(self, container, **kwargs):
-    """Adds this EmicSection's BPs to the minidom SVG called `container`. `container` is modified using `.appendChild`."""
+  def _make_BP_nodes(self, **kwargs):
+    """Returns this `EmicSection`'s BPs as an array of minidom nodes."""
+
+    children = []
 
     draw_BPs = kwargs.get("draw_BPs", False)
     if not draw_BPs:
@@ -218,7 +220,7 @@ class EmicSection(BPHaver):
       dot.setAttribute("r", str(1./6)) # magic width based on default stroke width
       dot.setAttribute("fill", BP_color)
       dot.setAttribute("stroke", "none")
-      container.appendChild(dot)
+      children.append(dot)
       # The end of a stubby line for the handle. Again the length 1/3 is magic.
       endx = (2*bp.x + bp.handlex)/3
       endy = (2*bp.y + bp.handley)/3
@@ -229,7 +231,22 @@ class EmicSection(BPHaver):
       stub.setAttribute("y2", str(endy))
       stub.setAttribute("stroke", BP_color)
       stub.setAttribute("stroke-width", str(1./12)) # like the dictionary's style
-      container.appendChild(stub)
+      children.append(stub)
+    
+    return children
+
+  def _add_boilerplate_nodes_to(self, nodes, **kwargs):
+    """Adds BPs (if enabled) and other nodes to the `nodes` list.
+    
+    Used by `EmicSection` and inheriting classes, no matter how the bulk of the svg is made."""
+    document = minidom.getDOMImplementation().createDocument("http://www.w3.org/2000/svg", "svg", None)
+
+    if kwargs.get("include_debug_info", False):
+      r = document.createComment(f" {self.name} ")
+      nodes.insert(0, r) # The name is the first thing in the element
+    
+    bps = self._make_BP_nodes(**kwargs)
+    nodes += bps
 
   def svg(self, **kwargs):
     """Return this section as an XML `<g>` element.
@@ -243,26 +260,32 @@ class EmicSection(BPHaver):
     if self.color:
       g.setAttribute("stroke", self.color)
     g.setAttribute("transform", f"translate({self.x} {self.y}) rotate({self.angle_in_degrees})")
+
+    nodes_to_add = []
           
     for subsection in self.subsections:
       if kwargs.get("draw_bounding_disks", False):
         r = subsection.svg_bounding_box()
-        g.appendChild(r)
+        nodes_to_add.append(r)
 
       el = subsection.svg(**kwargs)
       # el.setAttribute("class", self.text_class)
-      g.appendChild(el)
+      nodes_to_add.append(el)
     
     for rel in self.rels:
       if kwargs.get("draw_rel_bboxes", False):
         r = rel.svg_bounding_box(color = "green")
-        g.appendChild(r)
+        nodes_to_add.append(r)
       
       el = rel.svg()
       # el.setAttribute("class", self.text_class)
-      g.appendChild(el)
+      nodes_to_add.append(el)
+      
     
-    self._append_BPs_to(g, **kwargs)
+    self._add_boilerplate_nodes_to(nodes_to_add, **kwargs)
+
+    for node in nodes_to_add:
+      g.appendChild(node)
     
     return g
 
@@ -316,12 +339,25 @@ class SingleGlyphEmicSection(EmicSection):
     
     kwargs:
     * if `draw_BPs` is true, draw the BPs as green circles."""
+    
+    # TODO: We might not want to nest `<g>` elements too much, to make the svg more readable. But also I don't want to mess with the `lemma_svg`'s internal structure, though it's probably safe to assume it's a `<g>` with no transform. For now, there's a lot of repeated code from `EmicSection`'s `svg` method.
+    document = minidom.getDOMImplementation().createDocument("http://www.w3.org/2000/svg", "svg", None)
+    g = document.createElement("g")
+    if self.color:
+      g.setAttribute("stroke", self.color)
+    g.setAttribute("transform", f"translate({self.x} {self.y}) rotate({self.angle_in_degrees})")
+
     surface_svg = deepcopy(self.lemma_svg)
-    surface_svg.setAttribute("transform", f"translate({self.x} {self.y}) rotate({self.angle_in_degrees})")
+    # surface_svg.setAttribute("transform", f"translate({self.x} {self.y}) rotate({self.angle_in_degrees})")
+
+    nodes_to_add = [surface_svg]
     
-    self._append_BPs_to(surface_svg, **kwargs)
+    self._add_boilerplate_nodes_to(nodes_to_add, **kwargs)
+
+    for node in nodes_to_add:
+      g.appendChild(node)
     
-    return surface_svg
+    return g
   
   def svgpathtools_paths(self, own_coords = False):
     """Return a list of svgpathtools Path objects represented by this glyph.

@@ -91,7 +91,7 @@ class Main():
 
   def render_with_comments(self, text, description, draw_extras = False):
     canvas = self.append_canvas()
-    canvas.render(text, draw_bounding_disks=draw_extras, draw_BPs=draw_extras)
+    canvas.render(text, draw_bounding_disks=draw_extras, draw_BPs=draw_extras, include_debug_info=True)
 
     comment = ""
     comment += f"{description}:\n"
