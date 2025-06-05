@@ -264,6 +264,7 @@ class EmicSection(BPHaver):
     nodes_to_add = []
           
     for subsection in self.subsections:
+      # TODO: when the own_coords parameter actually works, this should probably be moved into subsection.svg (or rather into _add_boilerplate_nodes_to). That seems like a better separation of concerns. Also the svg will be easier for people to read if the bounding box/disk is inside the relevant `<g>`.
       if kwargs.get("draw_bounding_disks", False):
         r = subsection.svg_bounding_box()
         nodes_to_add.append(r)
