@@ -69,7 +69,7 @@ class Main():
     firstsg.angle = -math.pi/2#math.pi/6#-math.pi/2
     text.add_subsection(firstsg)
 
-    tree = self.make_tree(3, "tree")
+    tree = self.make_tree(2, "tree")
     text.add_subsection(tree, {})
     
     rel = RelLine(firstsg, "X", tree, "X")
@@ -91,7 +91,7 @@ class Main():
 
   def render_with_comments(self, text, description, draw_extras = False):
     canvas = self.append_canvas()
-    canvas.render(text, draw_bounding_disks=draw_extras, draw_BPs=draw_extras, include_debug_info=True)
+    canvas.render(text, draw_bounding_disks=draw_extras, draw_bboxes=draw_extras, draw_BPs=draw_extras, include_debug_info=True)
 
     comment = ""
     comment += f"{description}:\n"
@@ -113,7 +113,7 @@ class Main():
     #   self.render_with_comments(text, f"θ = {degrees}°", draw_extras=True)
 
     text = self.make_test_text(name = "initial")
-    self.render_relaxation_steps(text, "Tree", stepcount_per_iteration=5, iteration_count=3)
+    self.render_relaxation_steps(text, "Tree", stepcount_per_iteration=3, iteration_count=2)
 
 
     # subtext_1 = make_test_text(math.pi/6, name = "velocity relaxed")

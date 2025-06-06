@@ -102,7 +102,6 @@ class EmicSection(BPHaver):
   
   def own_coords_to_parent(self, x, y):
     """Return (x, y) from this BPHaver's coordinate system transformed to that of its parent."""
-    # NOTE: untested
     c, s = math.cos(self.angle), math.sin(self.angle)
     xnew = c*x - s*y
     ynew = s*x + c*y
@@ -149,21 +148,51 @@ class EmicSection(BPHaver):
     
     Arguments:
     stroke_width_allowance: pad the bounding box by this much on each side,
-      to allow for stroke width"""
+      to allow for stroke width;
+    own_coords: If True, gives the bbox in this section's coordinate system. If False, the bbox is in the parent's coordinates."""
     
-    # Temporary solution for the below fixme
-    r = self.bounding_disk_radius()
-    return (-r, r, -r, r)
+    # # Alternative solution. Less tight-fitting and always centered at (0,0).
+    # r = self.bounding_disk_radius()
+    # return (-r, r, -r, r)
 
-    # FIXME: this doesn't work when the section is transformed.
-    subsection_bboxes = [p.bounding_box(0., own_coords = own_coords) for p in self.subsections]
+    # Get the bounding boxes of all subsections in this section's coordinate system.
+    subsection_bboxes = [p.bounding_box(0., own_coords=False) for p in self.subsections]
+    # FIXME: Doesn't include rel bboxes
 
-    sbox = (
-            min(b[0] for b in subsection_bboxes),
-            max(b[1] for b in subsection_bboxes),
-            min(b[2] for b in subsection_bboxes),
-            max(b[3] for b in subsection_bboxes),
-            )
+    if own_coords:
+      # Bound the bboxes with a big bbox
+      sbox = (min(b[0] for b in subsection_bboxes),
+              max(b[1] for b in subsection_bboxes),
+              min(b[2] for b in subsection_bboxes),
+              max(b[3] for b in subsection_bboxes))
+    else:
+      # Bound the bboxes with a big bbox in the local coordinates and then transform it to the parent's coordinates.
+      sbox = (min(b[0] for b in subsection_bboxes),
+              max(b[1] for b in subsection_bboxes),
+              min(b[2] for b in subsection_bboxes),
+              max(b[3] for b in subsection_bboxes))
+
+      corners = [
+        self.own_coords_to_parent(sbox[0], sbox[2]),
+        self.own_coords_to_parent(sbox[0], sbox[3]),
+        self.own_coords_to_parent(sbox[1], sbox[2]),
+        self.own_coords_to_parent(sbox[1], sbox[3]),
+      ]
+
+      # # Alternative solution. Tighter fitting but more expensive.
+      # # Get the corners of the bboxes, transform them to the parent's coordinates, and bound them all with a big bbox.
+      # corners = []
+      # for bbox in subsection_bboxes:
+      #   corners.append(self.own_coords_to_parent(bbox[0], bbox[2]))
+      #   corners.append(self.own_coords_to_parent(bbox[0], bbox[3]))
+      #   corners.append(self.own_coords_to_parent(bbox[1], bbox[2]))
+      #   corners.append(self.own_coords_to_parent(bbox[1], bbox[3]))
+
+      sbox = (min(c[0] for c in corners),
+              max(c[0] for c in corners),
+              min(c[1] for c in corners),
+              max(c[1] for c in corners))
+    
     return (
             sbox[0]-stroke_width_allowance,
             sbox[1]+stroke_width_allowance,
@@ -177,24 +206,30 @@ class EmicSection(BPHaver):
     return max(math.sqrt(subsec.x**2+subsec.y**2) + subsec.bounding_disk_radius() for subsec in self.subsections)
   
 
-  def svg_bounding_box(self, color = "red", own_coords = False):
-    # """Return a `<rect>` element that bounds this section."""
-    # svg = minidom.getDOMImplementation().createDocument("http://www.w3.org/2000/svg", "svg", None)
-    # bbox = self.bounding_box(stroke_width_allowance=self.default_stroke_width)
-    # r = svg.createElement("rect")
-    # r.setAttribute("x", str(bbox[0]))
-    # r.setAttribute("width", str(bbox[1]-bbox[0]))
-    # r.setAttribute("y", str(bbox[2]))
-    # r.setAttribute("height", str(bbox[3]-bbox[2]))
-    # r.setAttribute("fill", "none")
-    # r.setAttribute("stroke", color)
-    # r.setAttribute("stroke-width", str(1./36))
-    # return r
+  def svg_bounding_box(self, color = "red", own_coords = True):
+    """Return a `<rect>` element that bounds this section."""
+    svg = minidom.getDOMImplementation().createDocument("http://www.w3.org/2000/svg", "svg", None)
+    bbox = self.bounding_box(stroke_width_allowance=self.default_stroke_width, own_coords=own_coords)
+    r = svg.createElement("rect")
+    r.setAttribute("x", str(bbox[0]))
+    r.setAttribute("width", str(bbox[1]-bbox[0]))
+    r.setAttribute("y", str(bbox[2]))
+    r.setAttribute("height", str(bbox[3]-bbox[2]))
+    r.setAttribute("fill", "none")
+    r.setAttribute("stroke", color)
+    r.setAttribute("stroke-width", str(1./36))
+    return r
+  
+  def svg_bounding_disk(self, color = "pink", own_coords = True):
     """Return a `<circle>` element that bounds this section."""
     svg = minidom.getDOMImplementation().createDocument("http://www.w3.org/2000/svg", "svg", None)
     c = svg.createElement("circle")
-    c.setAttribute("cx", str(self.x))
-    c.setAttribute("cy", str(self.y))
+    if own_coords:
+      c.setAttribute("cx", "0")
+      c.setAttribute("cy", "0")
+    else:
+      c.setAttribute("cx", str(self.x))
+      c.setAttribute("cy", str(self.y))
     c.setAttribute("r", str(self.bounding_disk_radius()))
     c.setAttribute("fill", "none")
     c.setAttribute("stroke", color)
@@ -245,6 +280,13 @@ class EmicSection(BPHaver):
       r = document.createComment(f" {self.name} ")
       nodes.insert(0, r) # The name is the first thing in the element
     
+    if kwargs.get("draw_bounding_disks", False):
+        r = self.svg_bounding_disk(own_coords=True)
+        nodes.append(r)
+    if kwargs.get("draw_bboxes", False):
+        r = self.svg_bounding_box(own_coords=True)
+        nodes.append(r)
+    
     bps = self._make_BP_nodes(**kwargs)
     nodes += bps
 
@@ -262,12 +304,16 @@ class EmicSection(BPHaver):
     g.setAttribute("transform", f"translate({self.x} {self.y}) rotate({self.angle_in_degrees})")
 
     nodes_to_add = []
-          
+    
     for subsection in self.subsections:
-      # TODO: when the own_coords parameter actually works, this should probably be moved into subsection.svg (or rather into _add_boilerplate_nodes_to). That seems like a better separation of concerns. Also the svg will be easier for people to read if the bounding box/disk is inside the relevant `<g>`.
-      if kwargs.get("draw_bounding_disks", False):
-        r = subsection.svg_bounding_box()
-        nodes_to_add.append(r)
+      # # Deprecated. Now handled by `_add_boilerplate_nodes_to`.
+      # # Leaving this here in case it's useful to reference. Maybe there will be situations where a parent section needs to draw bounding boxes.
+      # if kwargs.get("draw_bounding_disks", False):
+      #   r = subsection.svg_bounding_disk(own_coords = False, color="lime")
+      #   nodes_to_add.append(r)
+      # if kwargs.get("draw_bboxes", False):
+      #   r = subsection.svg_bounding_box(own_coords = False, color="green")
+      #   nodes_to_add.append(r)
 
       el = subsection.svg(**kwargs)
       # el.setAttribute("class", self.text_class)
