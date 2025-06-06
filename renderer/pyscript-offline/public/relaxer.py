@@ -213,7 +213,7 @@ def total_penalty(section, penalty_coefficients = {}):
   penalty = 0
 
   # Combine the default values with the passed values
-  penalty_coefficients = {"velocity": 0.1, "curvature": 0, "distance": 10, "curvature_squared": 5} | penalty_coefficients
+  penalty_coefficients = {"velocity": 0, "curvature": 0, "distance": 10, "curvature_squared": 5, "rel_distance": 10} | penalty_coefficients
 
   # FIXME: repetitive code below
 
@@ -222,6 +222,13 @@ def total_penalty(section, penalty_coefficients = {}):
     for rel in section.rels:
       velocity_partial_penalty += velocity_penalty(rel)
   penalty += velocity_partial_penalty*penalty_coefficients["velocity"]
+  
+  rel_distance_partial_penalty = 0
+  if penalty_coefficients["rel_distance"] != 0:
+    for rel in section.rels:
+      d = abs(rel.bp0.z - rel.bp1.z)
+      rel_distance_partial_penalty += d+2/d # optimal length is sqrt(2) units
+  penalty += rel_distance_partial_penalty*penalty_coefficients["rel_distance"]
   
   curvature_partial_penalty = 0
   curvature_squared_partial_penalty = 0
