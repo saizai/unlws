@@ -143,9 +143,6 @@ class DifferentialSectionFromEmic(DifferentialSection):
   def bounding_box(self, stroke_width_allowance=0, own_coords = False):
     return self.emicSection.bounding_box(stroke_width_allowance, own_coords = own_coords)
   
-  def bounding_disk_radius(self):
-    return self.emicSection.bounding_disk_radius()
-
   @property
   def style(self):
     return self.emicSection.style
