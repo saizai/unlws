@@ -243,11 +243,13 @@ def total_penalty(section, penalty_coefficients = {}):
       for subsec2 in section.subsections:
         if subsec1 is subsec2:
           continue
-        d_squared = (subsec1.x-subsec2.x)**2 + (subsec1.y-subsec2.y)**2
+        disk1 = subsec1.bounding_disk(own_coords = False)
+        disk2 = subsec2.bounding_disk(own_coords = False)
+        d_squared = (disk1[0]-disk2[0])**2 + (disk1[1]-disk2[1])**2
         # The normalization below is to ensure scale invariance, that is, we account for sections of radically different sizes.
         # For example, if you make the subsections twice as large and double the distance between them, then the size of their relaxation steps should double.
         # TODO: do the rest of the penalty functions have scale invariance?
-        min_d = subsec1.bounding_disk_radius() + subsec2.bounding_disk_radius()
+        min_d = disk1[2] + disk2[2]
         normalized_d_squared = d_squared / min_d**2
         distance_partial_penalty += min_d / (1+normalized_d_squared)
   penalty += distance_partial_penalty*penalty_coefficients["distance"]

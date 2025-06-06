@@ -200,11 +200,19 @@ class EmicSection(BPHaver):
             sbox[3]+stroke_width_allowance,
             )
   
-  def bounding_disk_radius(self):
-    """Gives the radius of a disk centered at (0, 0) that contains the bounding disks of its subsections."""
+  def bounding_disk(self, own_coords = True):
+    """A disk `(cx, cy, r)` that entirely contains the section's glyphs. Not necessarily the smallest disk possible."""
+    # Get the bbox
+    # own_coords=True used not because it's important, but just marginally cheaper to compute.
+    x0, x1, y0, y1 = self.bounding_box(own_coords = True) # FIXME: take into account stroke width
 
-    return max(math.sqrt(subsec.x**2+subsec.y**2) + subsec.bounding_disk_radius() for subsec in self.subsections)
-  
+    # Find the circumcircle of the bbox. It's a pretty rough approximation.
+    cx = (x0+x1)/2
+    cy = (y0+y1)/2
+    r = math.sqrt((x1-x0)**2+(y1-y0)**2)/2
+    if not own_coords:
+      cx, cy = self.own_coords_to_parent(cx, cy)
+    return (cx, cy, r)
 
   def svg_bounding_box(self, color = "red", own_coords = True):
     """Return a `<rect>` element that bounds this section."""
@@ -224,13 +232,10 @@ class EmicSection(BPHaver):
     """Return a `<circle>` element that bounds this section."""
     svg = minidom.getDOMImplementation().createDocument("http://www.w3.org/2000/svg", "svg", None)
     c = svg.createElement("circle")
-    if own_coords:
-      c.setAttribute("cx", "0")
-      c.setAttribute("cy", "0")
-    else:
-      c.setAttribute("cx", str(self.x))
-      c.setAttribute("cy", str(self.y))
-    c.setAttribute("r", str(self.bounding_disk_radius()))
+    cx, cy, r = self.bounding_disk(own_coords = own_coords)
+    c.setAttribute("cx", str(cx))
+    c.setAttribute("cy", str(cy))
+    c.setAttribute("r", str(r))
     c.setAttribute("fill", "none")
     c.setAttribute("stroke", color)
     c.setAttribute("stroke-width", str(1./36))
@@ -462,10 +467,3 @@ class SingleGlyphEmicSection(EmicSection):
             sbox[2]-stroke_width_allowance,
             sbox[3]+stroke_width_allowance,
             )
-
-  def bounding_disk_radius(self):
-    xmin, xmax, ymin, ymax = self.bounding_box(own_coords = True) # FIXME: take into account stroke width
-    distance_to_vertical_edge = max(abs(xmin), abs(xmax))
-    distance_to_horizontal_edge = max(abs(ymin), abs(ymax))
-    distance_to_farthest_corner = math.sqrt(distance_to_vertical_edge**2 + distance_to_horizontal_edge**2)
-    return distance_to_farthest_corner
