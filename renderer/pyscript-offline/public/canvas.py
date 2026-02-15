@@ -13,7 +13,17 @@ class HTMLDOMCanvas(Canvas):
   def __init__(self, element):
     # element should be a JsProxy
     self.element = element
-    pass
   
   def render(self, emictext):
     self.element.innerHTML = emictext.svg().toxml()
+
+class XMLCanvas(Canvas):
+  """Creates an XML element as a Canvas, which we write an SVG inside."""
+
+  def __init__(self, element):
+    # element should be an XML minidom element
+    self.element = element
+  
+  def render(self, emictext):
+    # FIXME: replace instead of appending
+    self.element.appendChild(emictext.svg().childNodes[0])
